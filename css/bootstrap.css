@@ -10144,4 +10144,10 @@ tr:nth-child(even) {
   padding-bottom: 2%;
 }
 
+.contact_form_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /*# sourceMappingURL=bootstrap.css.map */
