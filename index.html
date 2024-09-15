@@ -62,9 +62,22 @@
               </li>
             </ul>
             <div class="quote_btn-container">
-              <a href="login.html" class="quote_btn">
+              <a id="loginButton" href="#" class="quote_btn">
                 Login
               </a>
+              <script>
+                const isLoggedIn = true; // Change to pull from firebase
+        
+                const loginButton = document.getElementById('loginButton');
+        
+                if (isLoggedIn) {
+                    loginButton.href = 'account.html';
+                    loginButton.textContent = 'Account';
+                } else {
+                    loginButton.href = 'login.html';
+                    loginButton.textContent = 'Login';
+                }
+            </script>
               <img src="images/login.png" alt="loginIcon" width="45">
             </div>
           </div>
