@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Basic -->
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- Mobile Metas -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <!-- Site Metas -->
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-
-  <title>VolunTEEN</title>
-
-
-  <!-- bootstrap core css -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, 
+                   initial-scale=1.0" />
+    <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 
   <!-- font awesome style -->
@@ -25,74 +15,198 @@
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
-  
-
 </head>
 
-<body>
+<!-- header section strats -->
+<header class="header_section">
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg custom_nav-container ">
+        <a class="navbar-brand" href="index.html">
+          <span>
+            VolunTEEN
+          </span>
+        </a>
 
-  <div class="hero_area">
-    <!-- header section strats -->
-    <header class="header_section">
-      <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
-            <span>
-              VolunTEEN
-            </span>
-          </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class=""> </span>
+        </button>
 
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class=""> </span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
-              <li class="nav-item active">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="about.html"> About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="hours.html">hours</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="contact.html">Contact Us</a>
-              </li>
-            </ul>
-            <div class="quote_btn-container">
-              <a href="login.html" class="quote_btn">
-                Login
-              </a>
-              <img src="images/login.png" alt="loginIcon" width="45">
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav  ">
+            <li class="nav-item active">
+              <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html"> About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="hours.html">hours</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+          <div class="quote_btn-container">
+            <a href="login.html" class="quote_btn">
+              Login
+            </a>
+            <img src="images/login.png" alt="loginIcon" width="45">
           </div>
-        </nav>
-      </div>
-    </header>
-    <!-- end header section -->
-<head>
-<h1 class = "h1"> Volunteer Opportunities</h1>
-</head>
-<body style = "background-color:rgba(235, 198, 156, 0.905)">
-<p class = "UE"> Upcoming Events</p>
-<div class = "B1">
-    <img class="P1" src="P1.png">
-    <p class="T1"> Ved's Workshop for the Special Ed</p>
-    <p class="ST1"> Sun, Sep 9 | Community Center</p>
-    <button class = "BT1"> RSVP </button>
-</div>
-<div class="B2">
-    <img class = "P2" src="P2.png">
-    <p class="T2">Volunteer to help Ved raise money</p>
-    <p class="ST1"> Sun, Sep 9 | Community Center</p>
-    <button class = "BT1"> RSVP </button>
-</div>
-<div class = "B3">
-    <img class = "P3" src="P3.png">
-    <p class="T3">Cleaning up Ved's dirty dishes</p>
-    <p class="ST1"> Sun, Sep 9 | Community Center</p>
-    <button class = "BT1"> RSVP </button>
-</div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <!-- end header section -->
+  <p class="ki"> Volunteer Opportunities</p>
+<body>
+    <body style = "background-color:rgba(235, 198, 156, 0.905)">
+        <p class = "UE"> Upcoming Events</p>
+        <div class = "B1">
+            <img class="P1" src="P1.png">
+            <p class="T1">  Workshop for the Special Ed</p>
+            <p class="ST1"> Sun, Sep 9 | Community Center</p>
+            <button class = "myButton" id="myButton">Click me</button>
+            <div id="myPopup" class="popup">
+                <div class="popup-content">
+                    <h1 style="color: green">
+                        Hours Done
+                    </h1>
+                    <p>Enter Amount</p>
+                    <input> Hours Volunteered </input> 
+                    <div style="width:300px;">
+                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
+                        <div style="float: right; width: 130px"><button id="closePopup" style="align-items: left">Close</button></div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    
+            <script>
+                myButton.addEventListener(
+                    "click",
+                    function () {
+                        myPopup.classList.add("show");
+                    }
+                );
+                closePopup.addEventListener(
+                    "click",
+                    function () {
+                        myPopup.classList.remove(
+                            "show"
+                        );
+                    }
+                );
+                window.addEventListener(
+                    "click",
+                    function (event) {
+                        if (event.target == myPopup) {
+                            myPopup.classList.remove(
+                                "show"
+                            );
+                        }
+                    }
+                );
+            </script>
+        <div class="B2">
+            <img class = "P2" src="P2.png">
+            <p class="T2">Volunteer to help raise money</p>
+            <p class="ST1"> Sun, Sep 9 | Community Center</p>
+            <button class = "myButton" id="myButton2"> Click me </button>
+            <div id="myPopup2" class="popup">
+                <div class="popup-content">
+                    <h1 style="color: green">
+                        Hours Done
+                    </h1>
+                    <p>Enter Amount</p>
+                    <input> Hours Volunteered </input> 
+                    <div style="width:300px;">
+                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
+                        <div style="float: right; width: 130px"><button id="closePopup2" style="align-items: left">Close</button></div>
+                    </div>
+                    
+                </div>
+            </div>
+            <script>
+                myButton2.addEventListener(
+                    "click",
+                    function () {
+                        myPopup2.classList.add("show");
+                    }
+                );
+                closePopup2.addEventListener(
+                    "click",
+                    function () {
+                        myPopup2.classList.remove(
+                            "show"
+                        );
+                    }
+                );
+                window.addEventListener(
+                    "click",
+                    function (event) {
+                        if (event.target == myPopup2) {
+                            myPopup2.classList.remove(
+                                "show"
+                            );
+                        }
+                    }
+                );
+            </script>
+        </div>
+        <div class = "B3">
+            <img class = "P3" src="P3.png">
+            <p class="T3">Cleaning up  dirty dishes</p>
+            <p class="ST1"> Sun, Sep 9 | Community Center</p>
+            <button class = "myButton", id = "myButton3"> Click me </button>
+            <div id="myPopup3" class="popup">
+                <div class="popup-content">
+                    <h1 style="color: green">
+                        Hours Done
+                    </h1>
+                    <p>Enter Amount</p>
+                    <input> Hours Volunteered </input> 
+                    <div style="width:300px;">
+                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
+                        <div style="float: right; width: 130px"><button id="closePopup3" style="align-items: left">Close</button></div>
+                    </div>
+                    
+                </div>
+            </div>
+            <script>
+                myButton3.addEventListener(
+                    "click",
+                    function () {
+                        myPopup3.classList.add("show");
+                    }
+                );
+                closePopup3.addEventListener(
+                    "click",
+                    function () {
+                        myPopup3.classList.remove(
+                            "show"
+                        );
+                    }
+                );
+                window.addEventListener(
+                    "click",
+                    function (event) {
+                        if (event.target == myPopup3) {
+                            myPopup3.classList.remove(
+                                "show"
+                            );
+                        }
+                    }
+                );
+            </script>
+        </div>
+           
 </body>
+
+</html>
+
+
+
+
+
+
