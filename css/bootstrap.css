@@ -10115,4 +10115,33 @@ a.text-dark:hover, a.text-dark:focus {
   font-size: 75%;
 }
 
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  margin-bottom: 21em;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#tableInfo {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  text-align: center;
+  margin-left: 0;
+  margin-top: 0;
+  padding-top: 2%;
+  padding-bottom: 2%;
+}
+
 /*# sourceMappingURL=bootstrap.css.map */
