@@ -871,10 +871,3 @@ a:focus {
 }
 
 /*# sourceMappingURL=style.css.map */
-
-#contact-form {
-  display: flex;
-  justify-content: center; /* Horizontal alignment */
-  border: solid;
-  flex-shrink: 0
-}
