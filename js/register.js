@@ -31,7 +31,7 @@ const password = document.getElementById('password').value;
   
   .then((userCredential) => {
     alert("Creating Account")
-    window.location.href = "about.html";
+    window.location.href = "login.html";
     const user = userCredential.user;
   })
   .catch((error) => {

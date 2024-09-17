@@ -1,3 +1,4 @@
+const accountEmail = document.querySelector('.account-email');
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
@@ -45,8 +46,8 @@ login.addEventListener("click", function (event) {
   event.preventDefault()
 
   //inputs
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   signInWithEmailAndPassword(auth, email, password)
   
   //window.location.href = 
@@ -61,6 +62,10 @@ const password = document.getElementById('password').value;
     alert(errorMessage)
   })
 })
+
+
+
+//${userCredential.email}
 
 /*const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
