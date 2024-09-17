@@ -52,7 +52,7 @@ const password = document.getElementById('password').value;
   //window.location.href = 
   .then((userCredential) => {
     alert("Logging In")
-    window.location.href = "index.html";
+    window.location.href = "index.login.html";
     const user = userCredential.user;
   })
   .catch((error) => {
