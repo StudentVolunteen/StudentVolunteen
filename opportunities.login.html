@@ -125,6 +125,7 @@
                         }
                     }
                 );
+
             </script>
         <div class="B2">
             <img class = "P2" src="P2.png">
@@ -137,7 +138,11 @@
                         Hours Done
                     </h1>
                     <p>Enter Amount</p>
-                    <input> Hours Volunteered </input> 
+                    <input type = "number" id = "Name" placeholder="Hours Logged">
+                    <script>
+                        let Hourslogged = document.getElementById("Name").value;
+                        localStorage.setItem('Hourslogged', Hourslogged);
+                    </script>
                     <div style="width:300px;">
                         <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
                         <div style="float: right; width: 130px"><button id="closePopup2" style="align-items: left">Close</button></div>
@@ -145,6 +150,24 @@
                     
                 </div>
             </div>
+            <script>
+                // Wait for the DOM content to be loaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Get references to elements
+                    var submitButton = document.getElementById('Submit1');
+                    var inputField = document.getElementById('Name');
+        
+                    // Add an event listener to the submit button
+                    submitButton.addEventListener('click', function() {
+                        // Get the value from the input field
+                        var Hourslogged = inputField.value;
+                        // Store the value in localStorage
+                        localStorage.setItem('Hourslogged', Hourslogged);
+                    
+                    // Optionally, you can add code to close the popup or give feedback to the user
+                });
+            });
+        </script>
             <script>
                 myButton2.addEventListener(
                     "click",
@@ -170,6 +193,7 @@
                         }
                     }
                 );
+            
             </script>
         </div>
         <div class = "B3">
@@ -183,7 +207,11 @@
                         Hours Done
                     </h1>
                     <p>Enter Amount</p>
-                    <input> Hours Volunteered </input> 
+                    <input type = "number" id = "Name" placeholder="Hours Logged">
+                    <script>
+                        let Hourslogged = document.getElementById("Name").value;
+                        localStorage.setItem('Hourslogged', Hourslogged);
+                    </script>
                     <div style="width:300px;">
                         <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
                         <div style="float: right; width: 130px"><button id="closePopup3" style="align-items: left">Close</button></div>
@@ -191,6 +219,24 @@
                     
                 </div>
             </div>
+            <script>
+                // Wait for the DOM content to be loaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Get references to elements
+                    var submitButton = document.getElementById('Submit1');
+                    var inputField = document.getElementById('Name');
+        
+                    // Add an event listener to the submit button
+                    submitButton.addEventListener('click', function() {
+                        // Get the value from the input field
+                        var Hourslogged = inputField.value;
+                        // Store the value in localStorage
+                        localStorage.setItem('Hourslogged', Hourslogged);
+                    
+                    // Optionally, you can add code to close the popup or give feedback to the user
+                });
+            });
+        </script>
             <script>
                 myButton3.addEventListener(
                     "click",
