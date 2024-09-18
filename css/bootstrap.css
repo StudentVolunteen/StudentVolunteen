@@ -10259,4 +10259,21 @@ tr:nth-child(even) {
   margin-top: 1%;
 }
 
+.logoutButton {
+  text-align: center;
+  color: white;
+  background-color: var(--orange);
+  padding: 9px;
+  border-radius: 10px;
+}
+
+.logoutContainer {
+  margin-top: 20px;
+  transition: transform .2s;
+}
+
+.logoutContainer:hover {
+  transform: scale(1.1);
+}
+
 /*# sourceMappingURL=bootstrap.css.map */

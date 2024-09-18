@@ -30,7 +30,6 @@ const password = document.getElementById('password').value;
   createUserWithEmailAndPassword(auth, email, password)
   
   .then((userCredential) => {
-    alert("Creating Account")
     window.location.href = "login.html";
     const user = userCredential.user;
   })

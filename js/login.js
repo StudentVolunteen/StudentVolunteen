@@ -22,7 +22,6 @@ const auth = getAuth(app);
 
 //const create = document.getElementById('register');
 const login = document.getElementById('submitButton');
-const displayEmail = document.getElementById('test');
 //create.addEventListener("click", function (event) {
   //event.preventDefault()
 
@@ -53,7 +52,6 @@ login.addEventListener("click", function (event) {
   
   //window.location.href = 
   .then((userCredential) => {
-    alert("Logging In")
     localStorage.setItem("storageName", email);
     window.location.href = "index.login.html";
     const user = userCredential.user;
@@ -66,7 +64,18 @@ login.addEventListener("click", function (event) {
   })
 })
 
-
+const logout = document.getElementById('logoutButton');
+logout.addEventListener('click', (event) => {
+  window.location.href = "login.html";
+});
+/* logout.addEventListener('click', (event) => {
+  event.preventDefault();
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  }).catch((error) => {
+    console.error("Logout error:", error);
+  });
+}); */
 
 //${userCredential.email}
 
