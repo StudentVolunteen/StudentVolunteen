@@ -40,6 +40,8 @@ const password = document.getElementById('password').value;
     alert(errorMessage)
   })
 })
+
+
 /*
 login.addEventListener("click", function (event) {
   event.preventDefault()

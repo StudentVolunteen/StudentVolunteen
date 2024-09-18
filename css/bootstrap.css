@@ -10102,7 +10102,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 #volunteering {
-  margin: 5%;
+  margin-bottom: 5%;
 }
 
 .img-box {
@@ -10249,6 +10249,14 @@ tr:nth-child(even) {
     margin-left: 0px;
 }
 
+.user-info {
+  text-align: center;
+  margin: 5%;
+  color: white;
+}
 
+#account-email {
+  margin-top: 1%;
+}
 
 /*# sourceMappingURL=bootstrap.css.map */
