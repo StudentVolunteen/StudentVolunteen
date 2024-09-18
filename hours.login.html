@@ -91,13 +91,18 @@
     </tr>
     <tr>
         <td>Ex. Knitting Hats </td>
-        <td>Ex. 5</td>
+        <td id="Hourslogged"></td>
         <td>MM/DD/YEAR</td>
         <td>Ex. Hats4Homeless</td>
         <td>Phone or Email</td>
         <td>Pending or Approved</td>
     </tr>
   </table>
+  <script>
+    let Hourslogged = localStorage.getItem('Hourslogged');
+    document.getElementById('Hourslogged').innerHTML = Hourslogged;
+    document.getElementById('Hourslogged').innerHTML = Hourslogged
+  </script>
   <!-- end service section -->
 
 
