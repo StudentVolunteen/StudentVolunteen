@@ -1,3 +1,4 @@
+const accountEmail = document.querySelector('.account-email');
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
@@ -45,15 +46,16 @@ login.addEventListener("click", function (event) {
   event.preventDefault()
 
   //inputs
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   signInWithEmailAndPassword(auth, email, password)
   
   //window.location.href = 
   .then((userCredential) => {
-    alert("Logging In")
-    window.location.href = "index.html";
+    localStorage.setItem("storageName", email);
+    window.location.href = "index.login.html";
     const user = userCredential.user;
+
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -61,6 +63,21 @@ const password = document.getElementById('password').value;
     alert(errorMessage)
   })
 })
+
+const logout = document.getElementById('logoutButton');
+logout.addEventListener('click', (event) => {
+  window.location.href = "login.html";
+});
+/* logout.addEventListener('click', (event) => {
+  event.preventDefault();
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  }).catch((error) => {
+    console.error("Logout error:", error);
+  });
+}); */
+
+//${userCredential.email}
 
 /*const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
