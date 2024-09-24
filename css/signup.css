@@ -45,7 +45,7 @@ form {
     width: auto;
   }
   
-  input:focus {
+  input:focus, textarea:focus {
     outline: none;
     border-color: #66afe9;
     box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
@@ -107,5 +107,7 @@ form {
   #signup-form {
     margin-top: 1em;
   }
-  
-  
+
+  #addDescription {
+    width: auto;
+  }
