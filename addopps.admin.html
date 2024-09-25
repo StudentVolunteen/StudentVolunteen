@@ -26,6 +26,7 @@
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
   <link href="css/signup.css" rel="stylesheet" />
+  <link href="css/admin.css" rel="stylesheet"/>
 
 </head>
 
@@ -73,38 +74,59 @@
 
   <!-- opportunity add form section -->
 
-  <body>
-    <form id="addopps-form">
-      <h2>Add an Activity</h2>
-      <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="firstName" name="firstName" placeholder="Title">
+  <body>    
+    <div class="popup-container">
+      <div class="btn1-container">
+        <button class="btn1" type="submit" onclick="openPopup()">Add an Activity</button>
       </div>
-  
-      <div class="form-group">
-        <label for="description">Description:</label>
-        <textarea type="text" id="addDescription" name="" placeholder="Description" rows="4" cols="42"></textarea>
+      <div class="popup-new" id="popupNew">
+      <form id="addopps-form">
+        <div class="headingContainer">
+          <button class="adminbtn" onclick="closePopup()"><img src="images/cross.svg" alt="cross-out" id="cross"> </button>
+          <h2>Add an Activity</h2>
+        </div>
+        <div class="form-group">
+          <label for="title">Title:</label>
+          <input type="text" id="firstName" name="firstName" placeholder="Title">
+        </div>
+    
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea type="text" id="addDescription" name="" placeholder="Description" rows="4" cols="42"></textarea>
+        </div>
+    
+        <div class="form-group">
+          <label for="email">Supervisor Email:</label>
+          <input type="email" id="" name="" placeholder="Supervisor Email">
+        </div>
+    
+        <div class="form-group">
+          <label for="password">Event URL:</label>
+          <input type="password" id="password" name="password" placeholder="Event URL">
+        </div>
+        
+        <button type="button" id="submitButton">Submit</button>
+      </form>
       </div>
-  
-      <div class="form-group">
-        <label for="email">Supervisor Email:</label>
-        <input type="email" id="" name="" placeholder="Supervisor Email">
-      </div>
-  
-      <div class="form-group">
-        <label for="password">Event URL:</label>
-        <input type="password" id="password" name="password" placeholder="Event URL">
-      </div>
-      
-      <button type="button" id="submitButton">Submit</button>
-    </form>
-    <br><br><br><br><br>
+    </div>
   </body>
+  <br><br><br><br><br>
 
+  <script>
+    let popup = document.getElementById("popupNew");
+
+    function openPopup() {
+      popup.classList.add("open-popup-new");
+    }
+
+    function closePopup() {
+      popup.classlist.remove("open-popup-new");
+    }
+  </script>
   <!-- end opportunity add form section -->
 
-  <div class="footer_container">
-    <!-- info section -->
+  <!-- <div class="footer_container">
+     info section 
 
     <section class="info_section ">
       <div class="container">
@@ -196,9 +218,9 @@
       </div>
     </section>
 
-    <!-- end info section -->
+     end info section 
 
-    <!-- footer section -->
+     footer section 
     <footer class="footer_section">
       <div class="container">
         <p>
@@ -207,8 +229,8 @@
         </p>
       </div>
     </footer>
-    <!-- footer section -->
-  </div>
+    footer section
+  </div> -->
 
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>

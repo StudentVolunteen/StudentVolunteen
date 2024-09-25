@@ -1,0 +1,53 @@
+.btn1-container {
+    margin-top: 30px;
+    margin-left: 40%;
+    margin-right: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.popup-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn1 {
+    color: white;
+    padding: 10px 60px;
+    background: green;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 500;
+    border-radius: 30px;
+}
+
+.popup-new {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+.open-popup-new {
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#cross {
+    float: right;
+}
+
+.adminbtn {
+    background-color: transparent;
+    color: transparent;
+}
+
+.adminbtn:hover {
+    background-color: transparent;
+    color: transparent;
+}
