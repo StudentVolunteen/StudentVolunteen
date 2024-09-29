@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
 <head>
+    <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+        authDomain: "volunteen-438f6.firebaseapp.com",
+        projectId: "volunteen-438f6",
+        storageBucket: "volunteen-438f6.appspot.com",
+        messagingSenderId: "651971950022",
+        appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+      };
+      
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    </script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
@@ -106,13 +108,18 @@ const database = firebase.database();
                 // Add an event listener to the submit button
                 submitButton.addEventListener('click', function() {
                     // Get the value from the input field
-                    var Hourslogged = inputField.value;
-                  
+                    var Hourslogged = inputField.value;                  
                     // Store the value in localStorage
                     localStorage.setItem('Hourslogged1', Hourslogged);
+                    const hoursLogged = inputField.value;
+                    //saveHours(hoursLogged); // Save to Firebase
+                    localStorage.setItem('Hourslogged1', hoursLogged);
+                    
+                    document.getElementById('myPopup').classList.remove('show');
                     //console.log('Hours logged:', Hourslogged); 
                 // Optionally, you can add code to close the popup or give feedback to the user
-                document.getElementById('myPopup').classList.remove('show');
+                ;
+                        
             
             });
         });

@@ -112,6 +112,18 @@
     
   </table>
   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            getHours(); // Load the hours for the current user
+        } else {
+            // Handle user not logged in
+            console.log('User is not logged in');
+        }
+    });
+});
+</script>
+  <script>
     let Hourslogged1 = localStorage.getItem('Hourslogged1');
     console.log('Hourslogged1:', Hourslogged1);
     document.getElementById('Hourslogged1').innerHTML = Hourslogged1; 
