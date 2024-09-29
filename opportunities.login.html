@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 <head>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, 
@@ -55,7 +72,7 @@
   </header>
   <!-- end header section -->
   <p class="ki"> Volunteer Opportunities</p>
-<body>
+
     <body style = "background-color:rgba(235, 198, 156, 0.905)">
         <p class = "UE"> Upcoming Events</p>
         <div class = "B1">
@@ -69,11 +86,8 @@
                         Hours Done
                     </h1> 
                     <p>Enter Amount</p>
-                    <input type = "number" id = "Name" placeholder="Hours Logged">
-                    <script>
-                        let Hourslogged = document.getElementById("Name").value;
-                        localStorage.setItem('Hourslogged', Hourslogged);
-                    </script>
+                    <input type = "number" id = "hoursLogged1" placeholder="Hours Logged">
+
                     <div style="width:300px;">
                         <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit1"> Submit </button></div>
                         <div style="float: right; width: 130px"><button id="closePopup" style="align-items: left">Close</button></div>
@@ -87,16 +101,19 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Get references to elements
                 var submitButton = document.getElementById('Submit1');
-                var inputField = document.getElementById('Name');
+                var inputField = document.getElementById('hoursLogged1');
     
                 // Add an event listener to the submit button
                 submitButton.addEventListener('click', function() {
                     // Get the value from the input field
                     var Hourslogged = inputField.value;
+                  
                     // Store the value in localStorage
-                    localStorage.setItem('Hourslogged', Hourslogged);
-                
+                    localStorage.setItem('Hourslogged1', Hourslogged);
+                    //console.log('Hours logged:', Hourslogged); 
                 // Optionally, you can add code to close the popup or give feedback to the user
+                document.getElementById('myPopup').classList.remove('show');
+            
             });
         });
     </script>
@@ -138,13 +155,10 @@
                         Hours Done
                     </h1>
                     <p>Enter Amount</p>
-                    <input type = "number" id = "Name" placeholder="Hours Logged">
-                    <script>
-                        let Hourslogged = document.getElementById("Name").value;
-                        localStorage.setItem('Hourslogged', Hourslogged);
-                    </script>
+                    <input type = "number" id = "hoursloggedsecond" placeholder="Hours Logged">
+                    
                     <div style="width:300px;">
-                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
+                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit2"> Submit </button></div>
                         <div style="float: right; width: 130px"><button id="closePopup2" style="align-items: left">Close</button></div>
                     </div>
                     
@@ -154,16 +168,18 @@
                 // Wait for the DOM content to be loaded
                 document.addEventListener('DOMContentLoaded', function() {
                     // Get references to elements
-                    var submitButton = document.getElementById('Submit1');
-                    var inputField = document.getElementById('Name');
+                    var submitButton = document.getElementById('Submit2');
+                    var inputField = document.getElementById('hoursloggedsecond');
         
                     // Add an event listener to the submit button
                     submitButton.addEventListener('click', function() {
                         // Get the value from the input field
-                        var Hourslogged = inputField.value;
+                        var Hourslogged1 = inputField.value;
+                       
                         // Store the value in localStorage
-                        localStorage.setItem('Hourslogged', Hourslogged);
-                    
+                        localStorage.setItem('Hourslogged2', Hourslogged1);
+                        document.getElementById('myPopup2').classList.remove('show');
+                        
                     // Optionally, you can add code to close the popup or give feedback to the user
                 });
             });
@@ -207,13 +223,10 @@
                         Hours Done
                     </h1>
                     <p>Enter Amount</p>
-                    <input type = "number" id = "Name" placeholder="Hours Logged">
-                    <script>
-                        let Hourslogged = document.getElementById("Name").value;
-                        localStorage.setItem('Hourslogged', Hourslogged);
-                    </script>
+                    <input type = "number" id = "hoursloggedthird" placeholder="Hours Logged">
+                    
                     <div style="width:300px;">
-                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left"> Submit </button></div>
+                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit3"> Submit </button></div>
                         <div style="float: right; width: 130px"><button id="closePopup3" style="align-items: left">Close</button></div>
                     </div>
                     
@@ -223,15 +236,17 @@
                 // Wait for the DOM content to be loaded
                 document.addEventListener('DOMContentLoaded', function() {
                     // Get references to elements
-                    var submitButton = document.getElementById('Submit1');
-                    var inputField = document.getElementById('Name');
+                    var submitButton = document.getElementById('Submit3');
+                    var inputField = document.getElementById('hoursloggedthird');
         
                     // Add an event listener to the submit button
                     submitButton.addEventListener('click', function() {
                         // Get the value from the input field
-                        var Hourslogged = inputField.value;
+                        var Hourslogged2 = inputField.value;
                         // Store the value in localStorage
-                        localStorage.setItem('Hourslogged', Hourslogged);
+                        localStorage.setItem('Hourslogged3', Hourslogged2);
+                        document.getElementById('myPopup3').classList.remove('show');
+
                     
                     // Optionally, you can add code to close the popup or give feedback to the user
                 });
