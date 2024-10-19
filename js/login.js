@@ -131,3 +131,29 @@ logout.addEventListener('click', (event) => {
     return(password >= 6)
   }
 */
+// import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+// import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+// // Initialize Firebase (assuming this is already done in your app)
+// const database = getDatabase();
+// const auth = getAuth();
+
+// // Event listener for the submit button
+// document.getElementById('submitButton').addEventListener('click', function() {
+//   const user = auth.currentUser; // Get the currently logged-in user
+//   const hoursLogged = document.getElementById('hoursLogged1').value; // Adjust based on your input field
+
+//   if (user) {
+//     const hoursRef = ref(database, 'users/' + user.uid + '/hours'); // Reference to the user's hours
+//     set(hoursRef, {
+//       activity1: hoursLogged // Save logged hours
+//     }).then(() => {
+//       console.log('Hours logged successfully!');
+//       document.getElementById('hoursLogged1').value = ''; // Clear input field
+//     }).catch((error) => {
+//       console.error('Error logging hours: ', error);
+//     });
+//   } else {
+//     console.log('User is not logged in');
+//   }
+// });
