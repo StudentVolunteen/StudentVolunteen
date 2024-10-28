@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getFirestore, doc, getDoc, addDoc, collection, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getAuth} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
     authDomain: "volunteen-438f6.firebaseapp.com",
@@ -14,7 +15,8 @@ const firebaseConfig = {
 
   //Initialize services
   const db = getFirestore()
-
+  const auth = getAuth(app);
+  const user = localStorage.getItem("storageName");
 
 
 
@@ -25,12 +27,16 @@ create.addEventListener("click", (e) => {
     const description = document.getElementById('addDescription').value;
     const email = document.getElementById('supervisorMail').value;
     const password = document.getElementById('password').value;
-
-    alert("" + title + description + email + password)
+    if(user === "admin@gmail.com"){
+        alert("" + title + description + email + password)
     addDoc(collection(db, "Events"), {
         title: title,
         description: description,
         email: email,
         password: password,
     })
+    } else {
+        alert("You have to be an admin to make an event!");
+    }
+    
 })
