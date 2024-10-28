@@ -72,6 +72,7 @@
       </nav>
     </div>
   </header>
+  <h3>Welcome Back <span id="user-email"></span></h3>
   <!-- end header section -->
   <p class="ki"> Volunteer Opportunities</p>
 
@@ -98,6 +99,25 @@
                 </div>
             </div>
         </div>
+<script>
+const userId = firebase.auth().currentUser.uid;
+const hoursSpent = Hourslogged; // Example variable for hours
+
+// Reference to the Firestore collection
+const db = firebase.firestore();
+const userVolunteeringRef = db.collection('volunteering').doc(userId);
+
+// Save the hours for the specific user
+userVolunteeringRef.set({
+  hours: hoursSpent
+}, { merge: true }) // Use merge to avoid overwriting existing data
+  .then(() => {
+    console.log("User's volunteering hours saved successfully!");
+  })
+  .catch((error) => {
+    console.error("Error saving user's hours: ", error);
+  });
+</script>
         <script>
             // Wait for the DOM content to be loaded
             document.addEventListener('DOMContentLoaded', function() {
