@@ -37,10 +37,24 @@
 </head>
 
 <!-- header section strats -->
+ <style>
+    .header_section {
+        background-color: #7834b4;  /* Purple color */
+        width: 100%;  /* Make sure it spans the full width of the page */
+        padding: 0;   /* Remove any extra padding */
+        margin: 0;    /* Remove any default margin */
+        position: relative;
+        top: 0;       /* Ensure it starts at the top of the page */
+        height: 50px;
+    }
+</style>
+
 <header class="header_section">
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg custom_nav-container ">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="index.html" style = "background-color:#7834b4" RGB:
+
+        rgb(120,52,180)>
           <span>
             VolunTEEN
           </span>
@@ -72,12 +86,18 @@
       </nav>
     </div>
   </header>
-  <h3>Welcome Back <span id="user-email"></span></h3>
+  <!-- <h3>Welcome Back <span id="user-email"></span></h3> -->
   <!-- end header section -->
-  <p class="ki"> Volunteer Opportunities</p>
 
-    <body style = "background-color:rgba(119, 0, 159, 0.905)">
-        <p class = "UE"> Upcoming Events</p>
+  <p class="ki" style="color: rgb(0, 0, 0); position: relative; top: -40px;">
+        Upcoming Opportunities
+    
+
+    <!-- <body style = "background-color:#7834b4" RGB:
+
+    rgb(120,52,180)> -->
+    <body style = "background-color:#ffffff" RGB:rgb(120,52,180)>
+        <!-- <p class = "UE"> Upcoming Events</p> -->
         <div class = "B1">
             <img class="P1" src="P1.png">
             <p class="T1">  Workshop for the Special Ed</p>
@@ -99,25 +119,6 @@
                 </div>
             </div>
         </div>
-<script>
-const userId = firebase.auth().currentUser.uid;
-const hoursSpent = Hourslogged; // Example variable for hours
-
-// Reference to the Firestore collection
-const db = firebase.firestore();
-const userVolunteeringRef = db.collection('volunteering').doc(userId);
-
-// Save the hours for the specific user
-userVolunteeringRef.set({
-  hours: hoursSpent
-}, { merge: true }) // Use merge to avoid overwriting existing data
-  .then(() => {
-    console.log("User's volunteering hours saved successfully!");
-  })
-  .catch((error) => {
-    console.error("Error saving user's hours: ", error);
-  });
-</script>
         <script>
             // Wait for the DOM content to be loaded
             document.addEventListener('DOMContentLoaded', function() {
