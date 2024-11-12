@@ -27,7 +27,27 @@ const firebaseConfig = {
 
 // writeUserData(1, "tester", "test@gmail.com");
 
-
+login.addEventListener("click", function (event) {
+    event.preventDefault()
+  
+    //inputs
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    signInWithEmailAndPassword(auth, email, password)
+    
+    //window.location.href = 
+    .then((userCredential) => {
+      localStorage.setItem("storageName", email);
+      window.location.href = "index.login.html";
+      const user = userCredential.user;
+  
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(errorMessage)
+    })
+  })
 const accountEmail = document.querySelector('.account-email');
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
