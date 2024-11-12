@@ -14,14 +14,38 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig);
 
-function writeUserData(userId, name, email) {
-  app.database().ref('users').set(ref(db, 'users/' + userId), {
-  username: name,
-  email: email
-  });
-}
+// function writeUserData(userId, name, email) {
+//   app.database().ref('users').set(ref(db, 'users/' + userId), {
+//   username: name,
+//   email: email
+//   });
+// }
 
-writeUserData(1, "tester", "test@gmail.com");
+
+
+// writeUserData(1, "tester", "test@gmail.com");
+
+
+login.addEventListener("click", function (event) {
+    event.preventDefault()
   
+    //inputs
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    signInWithEmailAndPassword(auth, email, password)
+    
+    //window.location.href = 
+    .then((userCredential) => {
+      localStorage.setItem("storageName", email);
+      window.location.href = "index.login.html";
+      const user = userCredential.user;
+
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(errorMessage)
+    })
+  })
