@@ -19,6 +19,13 @@ const auth = getAuth(app);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 
-
+const data = {
+    name: 'Los Angeles',
+    state: 'CA',
+    country: 'USA'
+  };
+  
+  // Add a new document in collection "cities" with ID 'LA'
+  const res = await db.collection('userInfo').doc('LA').set(data);
 
   
