@@ -23,9 +23,26 @@ const data = {
     name: 'Los Angeles',
     state: 'CA',
     country: 'USA'
-  };
-  
-  // Add a new document in collection "cities" with ID 'LA'
-  const res = await db.collection('userInfo').doc('LA').set(data);
+};
+
+// Function to add data to Firestore
+async function addDocument() {
+    try {
+        // Specify the document location in the "userInfo" collection with ID "LA"
+        const res = await setDoc(doc(db, 'userInfo', 'LA'), data);
+        console.log("Document written successfully", res);
+    } catch (error) {
+        console.error("Error adding document: ", error);
+    }
+}
+
+// Listen for the click event on the button with id "Submit1"
+document.getElementById("Submit1").addEventListener("click", () => {
+    // Call the addDocument function
+    //addDocument();
+    
+    // Optionally, close the popup after submission if desired
+    console.log("hello");
+});
 
   

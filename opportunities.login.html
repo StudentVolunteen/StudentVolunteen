@@ -34,6 +34,7 @@
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
+  <script src="js/opportunities.js"></script>
 </head>
 
 <!-- header section strats -->
@@ -119,33 +120,6 @@
                 </div>
             </div>
         </div>
-        <script>
-            // Wait for the DOM content to be loaded
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get references to elements
-                var submitButton = document.getElementById('Submit1');
-                var inputField = document.getElementById('hoursLogged1');
-    
-                // Add an event listener to the submit button
-                submitButton.addEventListener('click', function() {
-                    // Get the value from the input field
-                    var Hourslogged = inputField.value;                  
-                    // Store the value in localStorage
-                    localStorage.setItem('Hourslogged1', Hourslogged);
-                    const hoursLogged = inputField.value;
-                    //saveHours(hoursLogged); // Save to Firebase
-                    localStorage.setItem('Hourslogged1', hoursLogged);
-                    
-                    document.getElementById('myPopup').classList.remove('show');
-                    window.location.href = 'hours.login.html';
-                    //console.log('Hours logged:', Hourslogged); 
-                // Optionally, you can add code to close the popup or give feedback to the user
-                ;
-                        
-            
-            });
-        });
-    </script>
             <script>
                 myButton.addEventListener(
                     "click",
