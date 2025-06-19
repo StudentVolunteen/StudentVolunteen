@@ -161,38 +161,99 @@
 </html>
 
 <script>
+// Import Firebase Firestore
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getFirestore, doc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+  authDomain: "volunteen-438f6.firebaseapp.com",
+  projectId: "volunteen-438f6",
+  storageBucket: "volunteen-438f6.appspot.com",
+  messagingSenderId: "651971950022",
+  appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 // Simple auth state for demo
 function updateAuthNav() {
   const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
   document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
   document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+  // Show Create Event button for supervisors
+  const role = localStorage.getItem('volunteen_current_role');
+  document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
 }
+
 document.getElementById('logout-btn').onclick = function() {
   localStorage.setItem('volunteen_logged_in', 'false');
   updateAuthNav();
   window.location.href = 'index.html';
 };
+
 updateAuthNav();
+
 // Registration form logic
 const signupForm = document.getElementById('signup-form');
 const submitBtn = document.getElementById('submitButton');
-submitBtn.onclick = function() {
+
+submitBtn.onclick = async function() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const passwordAgain = document.getElementById('password-again').value;
   const role = document.getElementById('role').value;
+  const firstName = document.getElementById('firstName').value;
+  const lastName = document.getElementById('lastName').value;
+  const grade = document.querySelector('input[name="grade"]:checked')?.value;
+  const birthdate = document.getElementById('birthdate').value;
+
   if (password !== passwordAgain) {
     alert('Passwords do not match.');
     return;
   }
-  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-  if (users[email]) {
-    alert('User already exists.');
-    return;
+
+  try {
+    // Save to userInfo collection
+    await setDoc(doc(db, "userInfo", email), {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      classification: role,
+      grade: grade,
+      birthdate: birthdate
+    });
+
+    // Save to appropriate role collection
+    if (role === 'student') {
+      await setDoc(doc(db, "Students", email), {
+        email: email,
+        events: [],
+        hoursSignedUp: 0
+      });
+    } else if (role === 'supervisor') {
+      await setDoc(doc(db, "Supervisors", email), {
+        email: email,
+        events: []
+      });
+    } else if (role === 'admin') {
+      await setDoc(doc(db, "Admins", email), {
+        email: email
+      });
+    }
+
+    // Save to localStorage for demo purposes
+    let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+    users[email] = { password, role };
+    localStorage.setItem('volunteen_users', JSON.stringify(users));
+
+    alert('Registration successful! Please log in.');
+    window.location.href = 'login.html';
+  } catch (error) {
+    console.error("Error saving user data: ", error);
+    alert('Registration failed. Please try again.');
   }
-  users[email] = { password, role };
-  localStorage.setItem('volunteen_users', JSON.stringify(users));
-  alert('Registration successful! Please log in.');
-  window.location.href = 'login.html';
 };
 </script>

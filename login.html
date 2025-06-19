@@ -120,36 +120,80 @@
 </html>
 
 <script>
+// Import Firebase Firestore
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+  authDomain: "volunteen-438f6.firebaseapp.com",
+  projectId: "volunteen-438f6",
+  storageBucket: "volunteen-438f6.appspot.com",
+  messagingSenderId: "651971950022",
+  appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 // Simple auth state for demo
 function updateAuthNav() {
   const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
   document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
   document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+  // Show Create Event button for supervisors
+  const role = localStorage.getItem('volunteen_current_role');
+  document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
 }
+
 document.getElementById('logout-btn').onclick = function() {
   localStorage.setItem('volunteen_logged_in', 'false');
   updateAuthNav();
   window.location.href = 'index.html';
 };
+
 updateAuthNav();
+
 // Login form logic
 const loginForm = document.getElementById('login-form');
 const submitBtn = document.getElementById('submitButton');
-submitBtn.onclick = function() {
+
+submitBtn.onclick = async function() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-  if (users[email] && users[email].password === password) {
-    localStorage.setItem('volunteen_logged_in', 'true');
-    localStorage.setItem('volunteen_current_user', email);
-    localStorage.setItem('volunteen_current_role', users[email].role || 'student');
-    if (users[email].role === 'supervisor') {
-      window.location.href = 'addopps.admin.html';
+
+  try {
+    // Check if user exists in userInfo collection
+    const userDoc = await getDoc(doc(db, "userInfo", email));
+    
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const role = userData.classification;
+      
+      // For demo purposes, we'll use localStorage for password check
+      // In production, you'd use Firebase Auth
+      const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+      
+      if (users[email] && users[email].password === password) {
+        localStorage.setItem('volunteen_logged_in', 'true');
+        localStorage.setItem('volunteen_current_user', email);
+        localStorage.setItem('volunteen_current_role', role);
+        
+        if (role === 'supervisor') {
+          window.location.href = 'addopps.admin.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      } else {
+        alert('Invalid email or password.');
+      }
     } else {
-      window.location.href = 'index.html';
+      alert('User not found. Please register first.');
     }
-  } else {
-    alert('Invalid email or password.');
+  } catch (error) {
+    console.error("Error during login: ", error);
+    alert('Login failed. Please try again.');
   }
 };
 </script>

@@ -111,9 +111,9 @@
                                 <h5 class="card-title">Volunteer to help raise money</h5>
                                 <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
                                 <button class="btn btn-primary w-100" onclick="openModal('Volunteer to help raise money', 'supervisor@example.com')">Sign Up</button>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100">
                             <img src="images/s3.png" class="card-img-top" alt="Event 3">
@@ -139,15 +139,15 @@
                     </div>
                     <div class="modal-body">
                         <input type="number" id="planned-hours" class="form-control" placeholder="Planned Hours" min="1" required />
-                    </div>
+        </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="confirmHoursBtn">Confirm</button>
                         <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                     </div>
                 </div>
+                </div>
             </div>
-        </div>
-        <script>
+            <script>
             let currentEvent = null;
             function openModal(eventTitle, supervisorEmail) {
                 currentEvent = { eventTitle, supervisorEmail };
@@ -177,7 +177,7 @@
                 alert('Signed up! Your hours are pending approval.');
             };
         </script>
-    </body>
+</body>
 
 </html>
 
