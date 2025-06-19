@@ -73,16 +73,22 @@
             <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="about.html"> About</a>
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="hours.login.html">Hours Logged</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="contact.html">Contact Us</a>
           </li>
         </ul>
-        <div class="quote_btn-container">
-          <a href="login.html" class="quote_btn">
-            Login
-          </a>
+        <div class="quote_btn-container" id="auth-buttons">
+          <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+          <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+          <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
           <img src="images/login.png" alt="loginIcon" width="45">
         </div>
       </div>
@@ -112,3 +118,38 @@
   </form>
 </body>
 </html>
+
+<script>
+// Simple auth state for demo
+function updateAuthNav() {
+  const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+  document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+  document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+}
+document.getElementById('logout-btn').onclick = function() {
+  localStorage.setItem('volunteen_logged_in', 'false');
+  updateAuthNav();
+  window.location.href = 'index.html';
+};
+updateAuthNav();
+// Login form logic
+const loginForm = document.getElementById('login-form');
+const submitBtn = document.getElementById('submitButton');
+submitBtn.onclick = function() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  if (users[email] && users[email].password === password) {
+    localStorage.setItem('volunteen_logged_in', 'true');
+    localStorage.setItem('volunteen_current_user', email);
+    localStorage.setItem('volunteen_current_role', users[email].role || 'student');
+    if (users[email].role === 'supervisor') {
+      window.location.href = 'addopps.admin.html';
+    } else {
+      window.location.href = 'index.html';
+    }
+  } else {
+    alert('Invalid email or password.');
+  }
+};
+</script>

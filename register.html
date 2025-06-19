@@ -75,16 +75,22 @@
             <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="about.html"> About</a>
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="hours.login.html">Hours Logged</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="contact.html">Contact Us</a>
           </li>
         </ul>
-        <div class="quote_btn-container">
-          <a href="login.html" class="quote_btn">
-            Login
-          </a>
+        <div class="quote_btn-container" id="auth-buttons">
+          <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+          <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+          <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
           <img src="images/login.png" alt="loginIcon" width="45">
         </div>
       </div>
@@ -137,6 +143,14 @@
       <input type="password" id="password-again" name="password-again" placeholder="Re-enter Password">
     </div>
 
+    <div class="form-group">
+      <label>Register as:</label>
+      <select id="role" name="role" class="form-control">
+        <option value="student">Student</option>
+        <option value="supervisor">Supervisor</option>
+      </select>
+    </div>
+
     <button type="button" id="submitButton">Submit</button>
     <nav>
       <a id="loginLink" href="/login.html">Already have an account?</a>
@@ -145,3 +159,40 @@
   <br><br><br><br><br>
 </body>
 </html>
+
+<script>
+// Simple auth state for demo
+function updateAuthNav() {
+  const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+  document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+  document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+}
+document.getElementById('logout-btn').onclick = function() {
+  localStorage.setItem('volunteen_logged_in', 'false');
+  updateAuthNav();
+  window.location.href = 'index.html';
+};
+updateAuthNav();
+// Registration form logic
+const signupForm = document.getElementById('signup-form');
+const submitBtn = document.getElementById('submitButton');
+submitBtn.onclick = function() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const passwordAgain = document.getElementById('password-again').value;
+  const role = document.getElementById('role').value;
+  if (password !== passwordAgain) {
+    alert('Passwords do not match.');
+    return;
+  }
+  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  if (users[email]) {
+    alert('User already exists.');
+    return;
+  }
+  users[email] = { password, role };
+  localStorage.setItem('volunteen_users', JSON.stringify(users));
+  alert('Registration successful! Please log in.');
+  window.location.href = 'login.html';
+};
+</script>

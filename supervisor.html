@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supervisor Approval - VolunTEEN</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container layout_padding">
+    <h2>Supervisor Approval</h2>
+    <p>Below are all students who signed up for this event. You can update their status after the event.</p>
+    <table class="table" id="signups-table">
+      <thead>
+        <tr><th>Student Email</th><th>Planned Hours</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Get eventId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('eventId');
+    // Load all signups for this event
+    function loadSignups() {
+      const allHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+      const signups = allHours.filter(h => h.eventId === eventId);
+      const tbody = document.getElementById('signups-table').querySelector('tbody');
+      tbody.innerHTML = '';
+      signups.forEach((signup, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${signup.student_email || 'Unknown'}</td><td>${signup.hours}</td><td id="status-${idx}">${signup.status}</td><td><button class="btn btn-success" onclick="updateStatus(${idx}, 'completed')">Completed</button> <button class="btn btn-danger" onclick="updateStatus(${idx}, 'incomplete')">Incomplete</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    function updateStatus(idx, status) {
+      const allHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+      const signups = allHours.filter(h => h.eventId === eventId);
+      if (signups[idx]) {
+        // Update status in the main array
+        const signup = signups[idx];
+        const mainIdx = allHours.findIndex(h => h.eventId === eventId && h.student_email === signup.student_email);
+        if (mainIdx !== -1) {
+          allHours[mainIdx].status = status;
+          localStorage.setItem('volunteen_hours', JSON.stringify(allHours));
+          loadSignups();
+        }
+      }
+    }
+    loadSignups();
+    window.updateStatus = updateStatus;
+  </script>
+</body>
+</html> 

@@ -51,21 +51,27 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav  ">
-            <li class="nav-item active">
-              <a class="nav-link" href="index.login.html">Home <span class="sr-only">(current)</span></a>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="hours.login.html">Hours</a>
+              <a class="nav-link" href="about.html">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="contact.login.html">Contact Us</a>
+              <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="hours.login.html">Hours Logged</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
           </ul>
-          <div class="quote_btn-container">
-            <a id="loginButton" href="account.login.html" class="quote_btn">
-              Account
-            </a>
+          <div class="quote_btn-container" id="auth-buttons">
+            <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+            <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+            <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
             <img src="images/login.png" alt="loginIcon" width="45">
           </div>
         </div>
@@ -75,223 +81,103 @@
   <!-- end header section -->
   <p class="ki"> Volunteer Opportunities</p>
 
-    <body style = "background-color:rgba(119, 0, 159, 0.905)">
-        <p class = "UE"> Upcoming Events</p>
-        <div class = "B1">
-            <img class="P1" src="P1.png">
-            <p class="T1">  Workshop for the Special Ed</p>
-            <p class="ST1"> Sun, Sep 9 | Community Center</p>
-            <button class = "myButton" id="myButton">Click me</button>
-            <div id="myPopup" class="popup">
-                <div class="popup-content">
-                    <h1 style="color: green">
-                        Hours Done
-                    </h1> 
-                    <p>Enter Amount</p>
-                    <input type = "number" id = "hoursLogged1" placeholder="Hours Logged">
-
-                    <div style="width:300px;">
-                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit1"> Submit </button></div>
-                        <div style="float: right; width: 130px"><button id="closePopup" style="align-items: left">Close</button></div>
+    <body class="sub_page">
+        <div class="hero_area">
+            <!-- header section strats -->
+            <!-- ... existing header/navbar code ... -->
+            <!-- end header section -->
+        </div>
+        <section class="layout_padding">
+            <div class="container">
+                <div class="heading_container">
+                    <h2>Volunteer Opportunities</h2>
+                    <p class="secondary-text">Find and sign up for volunteer opportunities below.</p>
+                </div>
+                <div class="row" id="opportunities-list">
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <img src="images/s1.png" class="card-img-top" alt="Event 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Workshop for the Special Ed</h5>
+                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
+                                <button class="btn btn-primary w-100" onclick="openModal('Workshop for the Special Ed', 'supervisor@example.com')">Sign Up</button>
+                            </div>
+                        </div>
                     </div>
-                    
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <img src="images/s2.png" class="card-img-top" alt="Event 2">
+                            <div class="card-body">
+                                <h5 class="card-title">Volunteer to help raise money</h5>
+                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
+                                <button class="btn btn-primary w-100" onclick="openModal('Volunteer to help raise money', 'supervisor@example.com')">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <img src="images/s3.png" class="card-img-top" alt="Event 3">
+                            <div class="card-body">
+                                <h5 class="card-title">Cleaning up dirty dishes</h5>
+                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
+                                <button class="btn btn-primary w-100" onclick="openModal('Cleaning up dirty dishes', 'supervisor@example.com')">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Modal for entering planned hours -->
+        <div class="modal" tabindex="-1" role="dialog" id="hoursModal" style="display:none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Enter Planned Hours</h5>
+                        <button type="button" class="close" aria-label="Close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" id="planned-hours" class="form-control" placeholder="Planned Hours" min="1" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="confirmHoursBtn">Confirm</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
         <script>
-            // Wait for the DOM content to be loaded
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get references to elements
-                var submitButton = document.getElementById('Submit1');
-                var inputField = document.getElementById('hoursLogged1');
-    
-                // Add an event listener to the submit button
-                submitButton.addEventListener('click', function() {
-                    // Get the value from the input field
-                    var Hourslogged = inputField.value;                  
-                    // Store the value in localStorage
-                    localStorage.setItem('Hourslogged1', Hourslogged);
-                    const hoursLogged = inputField.value;
-                    //saveHours(hoursLogged); // Save to Firebase
-                    localStorage.setItem('Hourslogged1', hoursLogged);
-                    
-                    document.getElementById('myPopup').classList.remove('show');
-                    window.location.href = 'hours.login.html';
-                    //console.log('Hours logged:', Hourslogged); 
-                // Optionally, you can add code to close the popup or give feedback to the user
-                ;
-                        
-            
-            });
-        });
-    </script>
-            <script>
-                myButton.addEventListener(
-                    "click",
-                    function () {
-                        myPopup.classList.add("show");
-                    }
-                );
-                closePopup.addEventListener(
-                    "click",
-                    function () {
-                        myPopup.classList.remove(
-                            "show"
-                        );
-                    }
-                );
-                window.addEventListener(
-                    "click",
-                    function (event) {
-                        if (event.target == myPopup) {
-                            myPopup.classList.remove(
-                                "show"
-                            );
-                        }
-                    }
-                );
-
-            </script>
-        <div class="B2">
-            <img class = "P2" src="P2.png">
-            <p class="T2">Volunteer to help raise money</p>
-            <p class="ST1"> Sun, Sep 9 | Community Center</p>
-            <button class = "myButton" id="myButton2"> Click me </button>
-            <div id="myPopup2" class="popup">
-                <div class="popup-content">
-                    <h1 style="color: green">
-                        Hours Done
-                    </h1>
-                    <p>Enter Amount</p>
-                    <input type = "number" id = "hoursloggedsecond" placeholder="Hours Logged">
-                    
-                    <div style="width:300px;">
-                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit2"> Submit </button></div>
-                        <div style="float: right; width: 130px"><button id="closePopup2" style="align-items: left">Close</button></div>
-                    </div>
-                    
-                </div>
-            </div>
-            <script>
-                
-                document.addEventListener('DOMContentLoaded', function() {
-                   
-                    var submitButton = document.getElementById('Submit2');
-                    var inputField = document.getElementById('hoursloggedsecond');
-        
-                    
-                    submitButton.addEventListener('click', function() {
-                        
-                        var Hourslogged1 = inputField.value;
-                       
-                        // Store the value in localStorage
-                        localStorage.setItem('Hourslogged2', Hourslogged1);
-                        document.getElementById('myPopup2').classList.remove('show');
-
-                        window.location.href = 'hours.login.html';
-                        
-                    
+            let currentEvent = null;
+            function openModal(eventTitle, supervisorEmail) {
+                currentEvent = { eventTitle, supervisorEmail };
+                document.getElementById('hoursModal').style.display = 'block';
+            }
+            function closeModal() {
+                document.getElementById('hoursModal').style.display = 'none';
+                document.getElementById('planned-hours').value = '';
+            }
+            document.getElementById('confirmHoursBtn').onclick = function() {
+                const plannedHours = document.getElementById('planned-hours').value;
+                if (!plannedHours) return alert('Please enter planned hours.');
+                const user = localStorage.getItem('volunteen_current_user') || 'demo';
+                const eventId = currentEvent.eventTitle + '-' + Date.now();
+                // Add to user's hours
+                let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+                hours.push({
+                    event: currentEvent.eventTitle,
+                    date: new Date().toISOString().slice(0,10),
+                    hours: plannedHours,
+                    supervisor: currentEvent.supervisorEmail,
+                    status: 'pending',
+                    eventId: eventId
                 });
-            });
+                localStorage.setItem('volunteen_hours', JSON.stringify(hours));
+                closeModal();
+                alert('Signed up! Your hours are pending approval.');
+            };
         </script>
-            <script>
-                myButton2.addEventListener(
-                    "click",
-                    function () {
-                        myPopup2.classList.add("show");
-                    }
-                );
-                closePopup2.addEventListener(
-                    "click",
-                    function () {
-                        myPopup2.classList.remove(
-                            "show"
-                        );
-                    }
-                );
-                window.addEventListener(
-                    "click",
-                    function (event) {
-                        if (event.target == myPopup2) {
-                            myPopup2.classList.remove(
-                                "show"
-                            );
-                        }
-                    }
-                );
-            
-            </script>
-        </div>
-        <div class = "B3">
-            <img class = "P3" src="P3.png">
-            <p class="T3">Cleaning up  dirty dishes</p>
-            <p class="ST1"> Sun, Sep 9 | Community Center</p>
-            <button class = "myButton", id = "myButton3"> Click me </button>
-            <div id="myPopup3" class="popup">
-                <div class="popup-content">
-                    <h1 style="color: green">
-                        Hours Done
-                    </h1>
-                    <p>Enter Amount</p>
-                    <input type = "number" id = "hoursloggedthird" placeholder="Hours Logged">
-                    
-                    <div style="width:300px;">
-                        <div style="float: left; width: 130px"> <button class = "Submitbutton" style="align-items: left" id = "Submit3"> Submit </button></div>
-                        <div style="float: right; width: 130px"><button id="closePopup3" style="align-items: left">Close</button></div>
-                    </div>
-                    
-                </div>
-            </div>
-            <script>
-                // Wait for the DOM content to be loaded
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Get references to elements
-                    var submitButton = document.getElementById('Submit3');
-                    var inputField = document.getElementById('hoursloggedthird');
-        
-                    // Add an event listener to the submit button
-                    submitButton.addEventListener('click', function() {
-                        // Get the value from the input field
-                        var Hourslogged2 = inputField.value;
-                        // Store the value in localStorage
-                        localStorage.setItem('Hourslogged3', Hourslogged2);
-                        document.getElementById('myPopup3').classList.remove('show');
-                        window.location.href = 'hours.login.html';
-
-                    
-                    // Optionally, you can add code to close the popup or give feedback to the user
-                });
-            });
-        </script>
-            <script>
-                myButton3.addEventListener(
-                    "click",
-                    function () {
-                        myPopup3.classList.add("show");
-                    }
-                );
-                closePopup3.addEventListener(
-                    "click",
-                    function () {
-                        myPopup3.classList.remove(
-                            "show"
-                        );
-                    }
-                );
-                window.addEventListener(
-                    "click",
-                    function (event) {
-                        if (event.target == myPopup3) {
-                            myPopup3.classList.remove(
-                                "show"
-                            );
-                        }
-                    }
-                );
-            </script>
-        </div>
-           
-</body>
+    </body>
 
 </html>
 

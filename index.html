@@ -47,21 +47,27 @@
           </button>
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
+            <ul class="navbar-nav">
               <li class="nav-item active">
                 <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html"> About</a>
+                <a class="nav-link" href="about.html">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="hours.login.html">Hours Logged</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="contact.html">Contact Us</a>
               </li>
             </ul>
-            <div class="quote_btn-container">
-              <a id="" href="login.html" class="quote_btn">
-                Login
-              </a>
+            <div class="quote_btn-container" id="auth-buttons">
+              <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+              <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+              <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
               <img src="images/login.png" alt="loginIcon" width="45">
             </div>
           </div>
@@ -186,7 +192,7 @@
           Students
         </h5>
         <p class="planText">
-          Need to keep track of your volunteer hours? Our website makes it a breeze! Easily log your hours and request certification with just a few clicks. Simply enter your supervisor's email, and they'll receive a notification about your completed activity. With a quick "yes" or "no" and their electronic signature, your hours will be officially certified and recorded. Want to find easily find new volunteer opportunities? Look no further! Our website features a wide range of volunteer options you can easily sign up for.
+          Need to keep track of your volunteer hours? Our website makes it a breeze! Easily log your hours and request certification with just a few clicks. Simply enter your supervisor's email, and they'll receive a notification about your completed activity. With a quick "yes" or "no" and their electronic signature, your hours will be officially certified and recorded. Want to find easily find new volunteer opportunities? Look no further! Our website features a wide range of volunteer options you can easily sign up for.
         </p>
       </div>
       <div class="planRight">
@@ -194,7 +200,7 @@
           Administrators
         </h5>
         <p class="planText">
-          Using this website, you will be ensuring the credibility of the hours that your students have completed. Also be able to organize and promote your own volunteer events to attract more participants and make a bigger impact.
+          Using this website, you will be ensuring the credibility of the hours that your students have completed. Also be able to organize and promote your own volunteer events to attract more participants and make a bigger impact.
         </p>
       </div>
     </div>
@@ -586,6 +592,27 @@
   <!-- Google Map -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
   <!-- End Google Map -->
+
+  <script>
+  // Simple auth state for demo
+  function updateAuthNav() {
+    const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+    document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+    document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+    // Show Create Event button for supervisors
+    const role = localStorage.getItem('volunteen_current_role');
+    document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
+  }
+  document.getElementById('logout-btn').onclick = function() {
+    localStorage.setItem('volunteen_logged_in', 'false');
+    updateAuthNav();
+    window.location.href = 'index.html';
+  };
+  document.getElementById('create-event-btn').onclick = function() {
+    window.location.href = 'addopps.admin.html';
+  };
+  updateAuthNav();
+  </script>
 
 </body>
 

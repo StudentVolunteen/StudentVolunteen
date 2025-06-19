@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 body {
   font-family: "Poppins", sans-serif;
-  color: #0c0c0c;
-  background-color: #ffffff;
+  color: #334155;
+  background-color: #F5F3FF;
   overflow-x: hidden;
 }
 
@@ -49,7 +49,8 @@ body {
 
 .heading_container h2 {
   position: relative;
-  font-weight: bold;
+  font-weight: 700;
+  color: #6366F1;
 }
 
 .heading_container h2 span {
@@ -103,6 +104,7 @@ a:focus {
 
 .header_section {
   padding: 15px 0;
+  background-color: #F5F3FF !important;
 }
 
 .header_section .container-fluid {
@@ -126,17 +128,18 @@ a:focus {
 
 .custom_nav-container .navbar-nav .nav-item .nav-link {
   padding: 5px 25px;
-  color: #ffffff;
+  color: #334155 !important;
   text-align: center;
   text-transform: uppercase;
-  border-radius: 5px;
+  border-radius: 6px;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  font-weight: 500;
 }
 
 .custom_nav-container .navbar-nav .nav-item:hover .nav-link, .custom_nav-container .navbar-nav .nav-item.active .nav-link {
-  color: #000000;
-  background-color: #ffffff;
+  color: #6366F1 !important;
+  background-color: #DFC5FE !important;
 }
 
 .custom_nav-container .navbar-toggler {
@@ -247,18 +250,18 @@ a:focus {
 .quote_btn-container .quote_btn {
   display: inline-block;
   padding: 5px 25px;
-  background-color: #f8842b;
-  color: #ffffff;
-  border-radius: 5px;
+  background-color: #DFC5FE !important;
+  color: #334155 !important;
+  border-radius: 6px !important;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  border: 1px solid #f8842b;
+  border: none !important;
+  font-weight: 600;
 }
 
 .quote_btn-container .quote_btn:hover {
-  color: #ffffff;
-  -webkit-transform: translateY(-3px);
-          transform: translateY(-3px);
+  color: #fff !important;
+  background-color: #6366F1 !important;
 }
 
 /*end header section*/
@@ -859,6 +862,7 @@ a:focus {
 .footer_section {
   position: relative;
   text-align: center;
+  background-color: #F5F3FF !important;
 }
 
 .footer_section p {
@@ -871,3 +875,68 @@ a:focus {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+/* --- VolunTEEN Custom Theme --- */
+.navbar-nav .nav-link {
+  color: #334155 !important;
+  font-weight: 500;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 6px;
+}
+
+.navbar-nav .nav-link.active, .navbar-nav .nav-link:focus, .navbar-nav .nav-link:hover {
+  background-color: #DFC5FE !important;
+  color: #6366F1 !important;
+}
+
+.quote_btn, .btn, .btn-primary, .btn-success, .btn-warning {
+  background-color: #DFC5FE !important;
+  color: #334155 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn:hover, .btn-primary:hover, .btn-success:hover, .btn-warning:hover, .quote_btn:hover {
+  background-color: #6366F1 !important;
+  color: #fff !important;
+}
+
+.card, .modal-content, .table, .form-control {
+  background-color: #fff !important;
+  color: #334155 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.06);
+}
+
+.heading_container p, .card-text, .secondary-text {
+  color: #94A3B8;
+}
+
+.table th, .table td {
+  color: #334155;
+  background-color: #fff !important;
+}
+
+input, select, textarea {
+  background-color: #F5F3FF !important;
+  color: #334155 !important;
+  border: 1px solid #DFC5FE !important;
+  border-radius: 6px !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #6366F1 !important;
+  outline: none !important;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav .nav-link {
+    margin-bottom: 8px;
+  }
+  .card {
+    margin-bottom: 16px;
+  }
+}
+/* --- End VolunTEEN Custom Theme --- */
