@@ -29,7 +29,7 @@
 
 </head>
 
-<body>
+<body class="sub_page">
 
   <div class="hero_area">
     <!-- header section strats -->
@@ -75,6 +75,7 @@
       </div>
     </header>
     <!-- end header section -->
+     
     <!-- slider section -->
     <section class="slider_section ">
       <div id="customCarousel1" class="carousel slide" data-ride="carousel">
@@ -94,6 +95,7 @@
                     </h1>
                     <p>
                       We are excited to have you at Volunteen! Our goal is to encourage students to participate in valuable volunteer experiences and help you keep track of your volunteer hours.
+                    </p>
                     <div class="btn-box">
                       <a href="login.html" class="btn1">
                         Join Us
@@ -147,7 +149,7 @@
                 <div class="col-md-6">
                   <div class="detail-box">
                     <h1>
-                      Linking Schools, Orginizations, and Clubs
+                      Linking Schools, Organizations, and Clubs
                     </h1>
                     <p>
                       Are you still using Excel spreadsheets? Quickly gain access to all your students' hours logged. We handle everything, while you can submit opportunities and view progress as you wish. Whether it's for induction, graduation, or anything in between, Volunteen is a no-brainer. 
@@ -173,69 +175,31 @@
     </section>
     <!-- end slider section -->
   </div>
-
-  <!-- plan section -->
-  <section class="service_section layout_padding">
+  <section class="layout_padding">
     <div class="container">
       <div class="heading_container">
-        <h2>
-          Our Plan
-        </h2>
-        <p>
-          Our researched plan ensures the best experience for both Students and Administrators
-        </p>
+        <h2>Welcome to VolunTEEN</h2>
+        <p class="secondary-text">Empowering students through service and volunteer opportunities.</p>
       </div>
-    </div>
-    <div class="ourPlan">
-      <div class="planLeft">
-        <h5 class="planHeader">
-          Students
-        </h5>
-        <p class="planText">
-          Need to keep track of your volunteer hours? Our website makes it a breeze! Easily log your hours and request certification with just a few clicks. Simply enter your supervisor's email, and they'll receive a notification about your completed activity. With a quick "yes" or "no" and their electronic signature, your hours will be officially certified and recorded. Want to find easily find new volunteer opportunities? Look no further! Our website features a wide range of volunteer options you can easily sign up for.
-        </p>
-      </div>
-      <div class="planRight">
-        <h5 class="planHeader">
-          Administrators
-        </h5>
-        <p class="planText">
-          Using this website, you will be ensuring the credibility of the hours that your students have completed. Also be able to organize and promote your own volunteer events to attract more participants and make a bigger impact.
-        </p>
-      </div>
-    </div>
-  </section>
-  <!-- end service section -->
-
-  <!-- about section -->
-
-  <section class="about_section layout_padding">
-    <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <div class="detail-box">
-            <div class="heading_container">
-              <h2>
-                About Us
-              </h2>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">For Students</h5>
+              <p class="card-text secondary-text">Track your volunteer hours, find opportunities, and get your service recognized.</p>
+              <a href="opportunities.login.html" class="btn btn-primary">Find Opportunities</a>
             </div>
-            <p>
-              Volunteen is a platform that lets you keep track of you volunteer hours without hassle and also recommends 
-              volunteering opportunites for you to do. It keeps everything related to your volunteering including logging 
-              hours, signing up for events, and getting your hours approved in one place making it very convenient and 
-              easy to use.
-            </p>
-            <a href="about.html">
-              Read More
-            </a>
           </div>
         </div>
-        <div class="col-md-6 ">
-          <div class="about-img-box">
-            <img src="images/about-img.png" alt="">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">For Supervisors</h5>
+              <p class="card-text secondary-text">Create events, manage volunteers, and approve hours efficiently.</p>
+              <a href="addopps.admin.html" class="btn btn-primary">Create Event</a>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   </section>
@@ -599,9 +563,23 @@
     const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
     document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
     document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
-    // Show Create Event button for supervisors
+    
+    // Get user role and permissions
     const role = localStorage.getItem('volunteen_current_role');
-    document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
+    const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+    
+    // Show Create Event button for sub-admins (supervisors)
+    const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+    document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+    
+    // Hide Hours Logged link for supervisors
+    const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
+    if (hoursLoggedLink) {
+      const parentLi = hoursLoggedLink.closest('li');
+      if (parentLi) {
+        parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
+      }
+    }
   }
   document.getElementById('logout-btn').onclick = function() {
     localStorage.setItem('volunteen_logged_in', 'false');
@@ -611,7 +589,8 @@
   document.getElementById('create-event-btn').onclick = function() {
     window.location.href = 'addopps.admin.html';
   };
-  updateAuthNav();
+  // Call updateAuthNav when page loads
+  document.addEventListener('DOMContentLoaded', updateAuthNav);
   </script>
 
 </body>

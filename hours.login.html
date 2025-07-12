@@ -101,18 +101,74 @@
     </div>
   </section>
   <script>
+    // Simple auth state for demo
+    function updateAuthNav() {
+      const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+      document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+      document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+      // Show Create Event button for supervisors
+      const role = localStorage.getItem('volunteen_current_role');
+      document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
+    }
+    document.getElementById('logout-btn').onclick = function() {
+      localStorage.setItem('volunteen_logged_in', 'false');
+      updateAuthNav();
+      window.location.href = 'index.html';
+    };
+    // Call updateAuthNav when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      updateAuthNav();
+      
+      // Redirect supervisors away from hours logged page
+      const role = localStorage.getItem('volunteen_current_role');
+      if (role === 'supervisor') {
+        alert('Supervisors cannot access the Hours Logged page.');
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      loadHours();
+    });
+    
+    // Also load hours when page becomes visible (for when user navigates back)
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        loadHours();
+      }
+    });
+    
     function loadHours() {
       const user = localStorage.getItem('volunteen_current_user') || 'demo';
       const hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
       const tbody = document.getElementById('hours-table').querySelector('tbody');
       tbody.innerHTML = '';
-      hours.filter(h => h.student_email === user || user === 'demo').forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${row.event}</td><td>${row.date}</td><td>${row.hours}</td><td>${row.supervisor}</td><td>${row.status}</td>`;
-        tbody.appendChild(tr);
+      
+      // Filter hours for current user
+      const userHours = hours.filter(h => {
+        // Handle both old format (no student_email) and new format (with student_email)
+        return (h.student_email === user) || (user === 'demo' && !h.student_email);
       });
+      
+      if (userHours.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="5" class="text-center">No hours logged yet. Sign up for opportunities to get started!</td>';
+        tbody.appendChild(tr);
+      } else {
+        userHours.forEach(row => {
+          const tr = document.createElement('tr');
+          const statusClass = row.status === 'approved' ? 'text-success' : 
+                             row.status === 'denied' ? 'text-danger' : 'text-warning';
+          tr.innerHTML = `
+            <td>${row.event}</td>
+            <td>${row.date}</td>
+            <td>${row.hours}</td>
+            <td>${row.supervisor}</td>
+            <td class="${statusClass}"><strong>${row.status.toUpperCase()}</strong></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
     }
-    document.addEventListener('DOMContentLoaded', loadHours);
   </script>
   <!-- end service section -->
 

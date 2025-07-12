@@ -78,33 +78,34 @@
 
   <!-- about section -->
 
-  <section class="about_section layout_padding layout_margin">
-    <div class="container  ">
+  <section class="layout_padding">
+    <div class="container">
+      <div class="heading_container">
+        <h2>About Us</h2>
+        <p class="secondary-text">Learn more about VolunTEEN and our mission.</p>
+      </div>
       <div class="row">
         <div class="col-md-6">
-          <div class="detail-box">
-            <div class="heading_container">
-              <h2>
-                About Us
-              </h2>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Our Mission</h5>
+              <p class="card-text secondary-text">
+                VolunTEEN is a platform that lets you keep track of your volunteer hours without hassle and also recommends 
+                volunteering opportunities for you to do. It keeps everything related to your volunteering including logging 
+                hours, signing up for events, and getting your hours approved in one place making it very convenient and 
+                easy to use.
+              </p>
+              <a href="register.html" class="btn btn-primary">Sign Up</a>
             </div>
-            <p>
-              Volunteen is a platform that lets you keep track of you volunteer hours without hassle and also recommends 
-              volunteering opportunites for you to do. It keeps everything related to your volunteering including logging 
-              hours, signing up for events, and getting your hours approved in one place making it very convenient and 
-              easy to use.
-            </p>
-            <a href="register.html">
-              Sign-Up
-            </a>
           </div>
         </div>
-        <div class="col-md-6 ">
-          <div class="img-box">
-            <img src="images/about-img.png" alt="">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <img src="images/about-img.png" alt="About VolunTEEN" class="img-fluid">
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   </section>
@@ -229,7 +230,38 @@
   <!-- Google Map -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
   <!-- End Google Map -->
-
+  <script>
+  // Simple auth state for demo
+  function updateAuthNav() {
+    const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+    document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+    document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+    
+    // Get user role and permissions
+    const role = localStorage.getItem('volunteen_current_role');
+    const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+    
+    // Show Create Event button for sub-admins (supervisors)
+    const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+    document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+    
+    // Hide Hours Logged link for supervisors
+    const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
+    if (hoursLoggedLink) {
+      const parentLi = hoursLoggedLink.closest('li');
+      if (parentLi) {
+        parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
+      }
+    }
+  }
+document.getElementById('logout-btn').onclick = function() {
+  localStorage.setItem('volunteen_logged_in', 'false');
+  updateAuthNav();
+  window.location.href = 'index.html';
+};
+// Call updateAuthNav when page loads
+document.addEventListener('DOMContentLoaded', updateAuthNav);
+</script>
 </body>
 
 </html>

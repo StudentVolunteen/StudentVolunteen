@@ -53,147 +53,135 @@
   <link href="css/signup.css" rel="stylesheet" />
 
 </head>
-<div class="hero_area">
-<header class="header_section">
-  <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg custom_nav-container ">
-      <a class="navbar-brand" href="index.html">
-        <span>
-          VolunTEEN
-        </span>
-      </a>
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              VolunTEEN
+            </span>
+          </a>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class=""> </span>
-      </button>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="opportunities.login.html">Opportunities</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="hours.login.html">Hours Logged</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="contact.html">Contact Us</a>
-          </li>
-        </ul>
-        <div class="quote_btn-container" id="auth-buttons">
-          <a id="login-btn" href="login.html" class="quote_btn">Login</a>
-          <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
-          <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
-          <img src="images/login.png" alt="loginIcon" width="45">
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="hours.login.html">Hours Logged</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="contact.html">Contact Us</a>
+              </li>
+            </ul>
+            <div class="quote_btn-container" id="auth-buttons">
+              <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+              <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+              <button id="create-event-btn" class="btn btn-warning ml-2" style="display:none;">Create Event</button>
+              <img src="images/login.png" alt="loginIcon" width="45">
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+  </div>
+  <section class="layout_padding">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="heading_container text-center">
+                <h2>VolunTEEN Login</h2>
+                <p class="secondary-text">Sign in to your account</p>
+              </div>
+              <form id="login-form">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="button" id="submitButton" class="btn btn-primary w-100">Login</button>
+                <div class="text-center mt-3">
+                  <a id="loginLink" href="register.html" class="secondary-text">Don't have an account? Sign up</a>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
-  </div>
-</header>
-
-<body>
-  <form id="login-form">
-    <header id="loginHeader">
-      <h1>VolunTEEN Login</h1>
-    </header>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Email">
     </div>
-
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="Password">
-    </div>
-
-    <button type="button" id="submitButton">Submit</button>
-    <nav>
-      <a id="loginLink" href="/register.html">Don't have an account?</a>
-    </nav>
-  </form>
+  </section>
 </body>
 </html>
 
 <script>
-// Import Firebase Firestore
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
-  authDomain: "volunteen-438f6.firebaseapp.com",
-  projectId: "volunteen-438f6",
-  storageBucket: "volunteen-438f6.appspot.com",
-  messagingSenderId: "651971950022",
-  appId: "1:651971950022:web:8709d63dbcbb745125eec7"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 // Simple auth state for demo
 function updateAuthNav() {
   const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
   document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
   document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
-  // Show Create Event button for supervisors
+  
+  // Get user role and permissions
   const role = localStorage.getItem('volunteen_current_role');
-  document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
+  const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+  
+  // Show Create Event button for sub-admins (supervisors)
+  const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+  document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+  
+  // Hide Hours Logged link for supervisors
+  const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
+  if (hoursLoggedLink) {
+    const parentLi = hoursLoggedLink.closest('li');
+    if (parentLi) {
+      parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
+    }
+  }
 }
-
 document.getElementById('logout-btn').onclick = function() {
   localStorage.setItem('volunteen_logged_in', 'false');
   updateAuthNav();
   window.location.href = 'index.html';
 };
-
-updateAuthNav();
-
+// Call updateAuthNav when page loads
+document.addEventListener('DOMContentLoaded', updateAuthNav);
 // Login form logic
 const loginForm = document.getElementById('login-form');
 const submitBtn = document.getElementById('submitButton');
-
-submitBtn.onclick = async function() {
+submitBtn.onclick = function() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-
-  try {
-    // Check if user exists in userInfo collection
-    const userDoc = await getDoc(doc(db, "userInfo", email));
-    
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      const role = userData.classification;
-      
-      // For demo purposes, we'll use localStorage for password check
-      // In production, you'd use Firebase Auth
-      const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-      
-      if (users[email] && users[email].password === password) {
-        localStorage.setItem('volunteen_logged_in', 'true');
-        localStorage.setItem('volunteen_current_user', email);
-        localStorage.setItem('volunteen_current_role', role);
-        
-        if (role === 'supervisor') {
-          window.location.href = 'addopps.admin.html';
-        } else {
-          window.location.href = 'index.html';
-        }
-      } else {
-        alert('Invalid email or password.');
-      }
+  const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  if (users[email] && users[email].password === password) {
+    localStorage.setItem('volunteen_logged_in', 'true');
+    localStorage.setItem('volunteen_current_user', email);
+    localStorage.setItem('volunteen_current_role', users[email].role || 'student');
+    localStorage.setItem('volunteen_current_permissions', JSON.stringify(users[email].permissions || []));
+    if (users[email].role === 'supervisor') {
+      window.location.href = 'addopps.admin.html';
     } else {
-      alert('User not found. Please register first.');
+      window.location.href = 'index.html';
     }
-  } catch (error) {
-    console.error("Error during login: ", error);
-    alert('Login failed. Please try again.');
+  } else {
+    alert('Invalid email or password.');
   }
 };
 </script>

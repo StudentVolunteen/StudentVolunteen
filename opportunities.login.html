@@ -148,33 +148,65 @@
                 </div>
             </div>
             <script>
+            // Simple auth state for demo
+            function updateAuthNav() {
+              const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+              document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+              document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+              
+              // Get user role and permissions
+              const role = localStorage.getItem('volunteen_current_role');
+              const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+              
+              // Show Create Event button for sub-admins (supervisors)
+              const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+              document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+              
+              // Hide Hours Logged link for supervisors
+              const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
+              if (hoursLoggedLink) {
+                const parentLi = hoursLoggedLink.closest('li');
+                if (parentLi) {
+                  parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
+                }
+              }
+            }
+            document.getElementById('logout-btn').onclick = function() {
+              localStorage.setItem('volunteen_logged_in', 'false');
+              updateAuthNav();
+              window.location.href = 'index.html';
+            };
+            // Call updateAuthNav when page loads
+            document.addEventListener('DOMContentLoaded', updateAuthNav);
+            // Modal logic
             let currentEvent = null;
             function openModal(eventTitle, supervisorEmail) {
-                currentEvent = { eventTitle, supervisorEmail };
-                document.getElementById('hoursModal').style.display = 'block';
+              currentEvent = { eventTitle, supervisorEmail };
+              document.getElementById('hoursModal').style.display = 'block';
             }
             function closeModal() {
-                document.getElementById('hoursModal').style.display = 'none';
-                document.getElementById('planned-hours').value = '';
+              document.getElementById('hoursModal').style.display = 'none';
+              document.getElementById('planned-hours').value = '';
             }
             document.getElementById('confirmHoursBtn').onclick = function() {
-                const plannedHours = document.getElementById('planned-hours').value;
-                if (!plannedHours) return alert('Please enter planned hours.');
-                const user = localStorage.getItem('volunteen_current_user') || 'demo';
-                const eventId = currentEvent.eventTitle + '-' + Date.now();
-                // Add to user's hours
-                let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
-                hours.push({
-                    event: currentEvent.eventTitle,
-                    date: new Date().toISOString().slice(0,10),
-                    hours: plannedHours,
-                    supervisor: currentEvent.supervisorEmail,
-                    status: 'pending',
-                    eventId: eventId
-                });
-                localStorage.setItem('volunteen_hours', JSON.stringify(hours));
-                closeModal();
-                alert('Signed up! Your hours are pending approval.');
+              const plannedHours = document.getElementById('planned-hours').value;
+              if (!plannedHours) return alert('Please enter planned hours.');
+              const user = localStorage.getItem('volunteen_current_user') || 'demo';
+              const eventId = currentEvent.eventTitle + '-' + Date.now();
+              // Add to user's hours
+              let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+              hours.push({
+                event: currentEvent.eventTitle,
+                date: new Date().toISOString().slice(0,10),
+                hours: plannedHours,
+                supervisor: currentEvent.supervisorEmail,
+                status: 'pending',
+                eventId: eventId,
+                student_email: user
+              });
+              localStorage.setItem('volunteen_hours', JSON.stringify(hours));
+              closeModal();
+              alert('Signed up! Your hours are pending approval.');
             };
         </script>
 </body>

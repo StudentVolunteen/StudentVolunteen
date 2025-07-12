@@ -98,162 +98,147 @@
   </div>
 </header>
 
-<body>
-  <form id="signup-form">
-    <div class="form-group">
-      <label for="firstName">First name:</label>
-      <input type="text" id="firstName" name="firstName" placeholder="First name">
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <!-- ... existing header/navbar code ... -->
+    <!-- end header section -->
+  </div>
+  <section class="layout_padding">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <div class="heading_container text-center">
+                <h2>Create Your Account</h2>
+                <p class="secondary-text">Join VolunTEEN to start tracking your volunteer hours</p>
+              </div>
+              <form id="signup-form">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="firstName">First name</label>
+                      <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First name" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="lastName">Last name</label>
+                      <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last name" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Grade</label>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" id="grade9" name="grade" value="9" class="form-check-input">
+                    <label for="grade9" class="form-check-label">9</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" id="grade10" name="grade" value="10" class="form-check-input">
+                    <label for="grade10" class="form-check-label">10</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" id="grade11" name="grade" value="11" class="form-check-input">
+                    <label for="grade11" class="form-check-label">11</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" id="grade12" name="grade" value="12" class="form-check-input">
+                    <label for="grade12" class="form-check-label">12</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="birthdate">Birthday</label>
+                  <input type="date" id="birthdate" name="birthdate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                  <label for="role">Register as</label>
+                  <select id="role" name="role" class="form-control">
+                    <option value="student">Student</option>
+                    <option value="supervisor">Supervisor (includes Sub-Admin permissions)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                  <label for="password-again">Re-enter Password</label>
+                  <input type="password" id="password-again" name="password-again" class="form-control" placeholder="Re-enter Password" required>
+                </div>
+                <button type="button" id="submitButton" class="btn btn-primary w-100">Create Account</button>
+                <div class="text-center mt-3">
+                  <a id="loginLink" href="login.html" class="secondary-text">Already have an account? Sign in</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="lastName">Last name:</label>
-      <input type="text" id="lastName" name="lastName" placeholder="Last name">
-    </div>
-
-    <div class="form-group">
-      <label>Grade:</label>
-      <input type="radio" id="grade9" name="grade" value="9">
-      <label for="grade9">9</label>
-      <br>
-      <input type="radio" id="grade10" name="grade" value="10">
-      <label for="grade10">10</label>
-      <br>
-      <input type="radio" id="grade11" name="grade" value="11">
-      <label for="grade11">11</label>
-      <br>
-      <input type="radio" id="grade12" name="grade" value="12">
-      <label for="grade12">12</label>
-    </div>
-
-    <div class="form-group">
-      <label for="birthdate">Birthday:</label>
-      <input type="date" id="birthdate" name="birthdate" placeholder="Birthday">
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Email">
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="Password">
-      <br/>
-      <label for="password-again">Re-enter Password:</label>
-      <input type="password" id="password-again" name="password-again" placeholder="Re-enter Password">
-    </div>
-
-    <div class="form-group">
-      <label>Register as:</label>
-      <select id="role" name="role" class="form-control">
-        <option value="student">Student</option>
-        <option value="supervisor">Supervisor</option>
-      </select>
-    </div>
-
-    <button type="button" id="submitButton">Submit</button>
-    <nav>
-      <a id="loginLink" href="/login.html">Already have an account?</a>
-    </nav>
-  </form>
-  <br><br><br><br><br>
+  </section>
+  <!-- ... existing footer code ... -->
 </body>
 </html>
 
 <script>
-// Import Firebase Firestore
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, doc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
-  authDomain: "volunteen-438f6.firebaseapp.com",
-  projectId: "volunteen-438f6",
-  storageBucket: "volunteen-438f6.appspot.com",
-  messagingSenderId: "651971950022",
-  appId: "1:651971950022:web:8709d63dbcbb745125eec7"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 // Simple auth state for demo
 function updateAuthNav() {
   const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
   document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
   document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
-  // Show Create Event button for supervisors
+  
+  // Get user role and permissions
   const role = localStorage.getItem('volunteen_current_role');
-  document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
+  const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+  
+  // Show Create Event button for sub-admins (supervisors)
+  const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+  document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+  
+  // Hide Hours Logged link for supervisors
+  const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
+  if (hoursLoggedLink) {
+    const parentLi = hoursLoggedLink.closest('li');
+    if (parentLi) {
+      parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
+    }
+  }
 }
-
 document.getElementById('logout-btn').onclick = function() {
   localStorage.setItem('volunteen_logged_in', 'false');
   updateAuthNav();
   window.location.href = 'index.html';
 };
-
-updateAuthNav();
-
+// Call updateAuthNav when page loads
+document.addEventListener('DOMContentLoaded', updateAuthNav);
 // Registration form logic
 const signupForm = document.getElementById('signup-form');
 const submitBtn = document.getElementById('submitButton');
-
-submitBtn.onclick = async function() {
+submitBtn.onclick = function() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const passwordAgain = document.getElementById('password-again').value;
   const role = document.getElementById('role').value;
-  const firstName = document.getElementById('firstName').value;
-  const lastName = document.getElementById('lastName').value;
-  const grade = document.querySelector('input[name="grade"]:checked')?.value;
-  const birthdate = document.getElementById('birthdate').value;
-
   if (password !== passwordAgain) {
     alert('Passwords do not match.');
     return;
   }
-
-  try {
-    // Save to userInfo collection
-    await setDoc(doc(db, "userInfo", email), {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      classification: role,
-      grade: grade,
-      birthdate: birthdate
-    });
-
-    // Save to appropriate role collection
-    if (role === 'student') {
-      await setDoc(doc(db, "Students", email), {
-        email: email,
-        events: [],
-        hoursSignedUp: 0
-      });
-    } else if (role === 'supervisor') {
-      await setDoc(doc(db, "Supervisors", email), {
-        email: email,
-        events: []
-      });
-    } else if (role === 'admin') {
-      await setDoc(doc(db, "Admins", email), {
-        email: email
-      });
-    }
-
-    // Save to localStorage for demo purposes
-    let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-    users[email] = { password, role };
-    localStorage.setItem('volunteen_users', JSON.stringify(users));
-
-    alert('Registration successful! Please log in.');
-    window.location.href = 'login.html';
-  } catch (error) {
-    console.error("Error saving user data: ", error);
-    alert('Registration failed. Please try again.');
+  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  if (users[email]) {
+    alert('User already exists.');
+    return;
   }
+  // Supervisors automatically get sub-admin permissions
+  const permissions = role === 'supervisor' ? ['sub-admin'] : [];
+  users[email] = { password, role, permissions };
+  localStorage.setItem('volunteen_users', JSON.stringify(users));
+  alert('Registration successful! Please log in.');
+  window.location.href = 'login.html';
 };
 </script>
