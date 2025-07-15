@@ -3,23 +3,7 @@
 
 
 <head>
-    <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
-        authDomain: "volunteen-438f6.firebaseapp.com",
-        projectId: "volunteen-438f6",
-        storageBucket: "volunteen-438f6.appspot.com",
-        messagingSenderId: "651971950022",
-        appId: "1:651971950022:web:8709d63dbcbb745125eec7"
-      };
-      
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script type="module" src="js/opportunities.js" defer></script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, 
@@ -92,38 +76,10 @@
                 <div class="heading_container">
                     <h2>Volunteer Opportunities</h2>
                     <p class="secondary-text">Find and sign up for volunteer opportunities below.</p>
+                    <button id="refresh-btn" class="btn btn-secondary" style="display:none;" onclick="loadEvents()">Refresh Events</button>
                 </div>
                 <div class="row" id="opportunities-list">
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100">
-                            <img src="images/s1.png" class="card-img-top" alt="Event 1">
-                            <div class="card-body">
-                                <h5 class="card-title">Workshop for the Special Ed</h5>
-                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
-                                <button class="btn btn-primary w-100" onclick="openModal('Workshop for the Special Ed', 'supervisor@example.com')">Sign Up</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100">
-                            <img src="images/s2.png" class="card-img-top" alt="Event 2">
-                            <div class="card-body">
-                                <h5 class="card-title">Volunteer to help raise money</h5>
-                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
-                                <button class="btn btn-primary w-100" onclick="openModal('Volunteer to help raise money', 'supervisor@example.com')">Sign Up</button>
-                </div>
-            </div>
-        </div>
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100">
-                            <img src="images/s3.png" class="card-img-top" alt="Event 3">
-                            <div class="card-body">
-                                <h5 class="card-title">Cleaning up dirty dishes</h5>
-                                <p class="card-text secondary-text">Sun, Sep 9 | Community Center</p>
-                                <button class="btn btn-primary w-100" onclick="openModal('Cleaning up dirty dishes', 'supervisor@example.com')">Sign Up</button>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Events will be loaded dynamically from Firebase -->
                 </div>
             </div>
         </section>
@@ -161,6 +117,7 @@
               // Show Create Event button for sub-admins (supervisors)
               const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
               document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+              document.getElementById('refresh-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
               
               // Hide Hours Logged link for supervisors
               const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');
@@ -176,12 +133,16 @@
               updateAuthNav();
               window.location.href = 'index.html';
             };
+            
+            document.getElementById('create-event-btn').onclick = function() {
+              window.location.href = 'addopps.admin.html';
+            };
             // Call updateAuthNav when page loads
             document.addEventListener('DOMContentLoaded', updateAuthNav);
             // Modal logic
             let currentEvent = null;
-            function openModal(eventTitle, supervisorEmail) {
-              currentEvent = { eventTitle, supervisorEmail };
+            function openModal(eventTitle, supervisorEmail, eventId) {
+              currentEvent = { eventTitle, supervisorEmail, eventId };
               document.getElementById('hoursModal').style.display = 'block';
             }
             function closeModal() {

@@ -1,8 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 
-// TODO: Replace the following with your app's Firebase project configuration
-// See: https://support.google.com/firebase/answer/7015592
 const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
     authDomain: "volunteen-438f6.firebaseapp.com",
@@ -14,35 +12,70 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 
-const data = {
-    name: 'Los Angeles',
-    state: 'CA',
-    country: 'USA'
-};
-
-// Function to add data to Firestore
-async function addDocument() {
+// Function to fetch and display events
+async function loadEvents() {
     try {
-        // Specify the document location in the "userInfo" collection with ID "LA"
-        const res = await setDoc(doc(db, 'userInfo', 'LA'), data);
-        console.log("Document written successfully", res);
+        const querySnapshot = await getDocs(collection(db, "Events"));
+        const opportunitiesList = document.getElementById('opportunities-list');
+        
+        // Clear existing content
+        opportunitiesList.innerHTML = '';
+        
+        // Add each event to the page
+        querySnapshot.forEach((doc) => {
+            const eventData = doc.data();
+            const eventCard = createEventCard(eventData, doc.id);
+            opportunitiesList.appendChild(eventCard);
+        });
+        
+        // If no events found, show a message
+        if (querySnapshot.empty) {
+            opportunitiesList.innerHTML = `
+                <div class="col-12 text-center">
+                    <p class="text-muted">No volunteer opportunities available at the moment.</p>
+                </div>
+            `;
+        }
     } catch (error) {
-        console.error("Error adding document: ", error);
+        console.error("Error loading events: ", error);
+        document.getElementById('opportunities-list').innerHTML = `
+            <div class="col-12 text-center">
+                <p class="text-danger">Error loading opportunities. Please try again later.</p>
+            </div>
+        `;
     }
 }
 
-// Listen for the click event on the button with id "Submit1"
-document.getElementById("Submit1").addEventListener("click", () => {
-    // Call the addDocument function
-    //addDocument();
+// Function to create an event card
+function createEventCard(eventData, eventId) {
+    const col = document.createElement('div');
+    col.className = 'col-md-6 col-lg-4 mb-4';
     
-    // Optionally, close the popup after submission if desired
-    console.log("hello");
-});
+    // Use a default image or cycle through available images
+    const imageIndex = Math.floor(Math.random() * 3) + 1;
+    const imageSrc = `images/s${imageIndex}.png`;
+    
+    col.innerHTML = `
+        <div class="card h-100">
+            <img src="${imageSrc}" class="card-img-top" alt="${eventData.title}">
+            <div class="card-body">
+                <h5 class="card-title">${eventData.title}</h5>
+                <p class="card-text secondary-text">${eventData.description}</p>
+                <p class="card-text"><small class="text-muted">Supervisor: ${eventData.email}</small></p>
+                <button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>
+            </div>
+        </div>
+    `;
+    
+    return col;
+}
+
+// Make loadEvents available globally
+window.loadEvents = loadEvents;
+
+// Load events when the page loads
+document.addEventListener('DOMContentLoaded', loadEvents);
 
   

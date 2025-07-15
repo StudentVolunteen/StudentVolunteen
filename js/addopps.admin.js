@@ -11,32 +11,46 @@ const firebaseConfig = {
   };
   
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  
-  //Initialize services
-  const db = getFirestore()
-  const auth = getAuth(app);
-  const user = localStorage.getItem("storageName");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
+const user = localStorage.getItem("storageName");
+const role = localStorage.getItem('volunteen_current_role');
+const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
 
+const create = document.getElementById('submitButton');
+create.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-
-  const create = document.getElementById('submitButton');
-create.addEventListener("click", (e) => {
     const title = document.getElementById('firstName').value;
     const description = document.getElementById('addDescription').value;
     const email = document.getElementById('supervisorMail').value;
     const password = document.getElementById('password').value;
-    if(user === "admin@gmail.com"){
-        alert("" + title + description + email + password)
-    addDoc(collection(db, "Events"), {
-        title: title,
-        description: description,
-        email: email,
-        password: password,
-    })
-    } else {
-        alert("You have to be an admin to make an event!");
+
+    if (!title || !description || !email || !password) {
+        alert("Please fill in all fields!");
+        return;
     }
-    
-})
+
+    if (hasSubAdminPermission) {
+        try {
+            await addDoc(collection(db, "Events"), {
+                title,
+                description,
+                email,
+                password,
+                createdAt: new Date().toISOString()
+            });
+            alert("Event created successfully!");
+            // Redirect to opportunities page to see the new event
+            window.location.href = 'opportunities.login.html';
+        } catch (err) {
+            console.error("Error writing document: ", err);
+            alert("Failed to create event: " + err.message);
+        }
+    } else {
+        alert("You have to be a sub-admin to make an event!");
+    }
+});
