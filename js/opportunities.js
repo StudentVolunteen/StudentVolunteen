@@ -144,11 +144,12 @@ async function cleanupAllEvents() {
             
             for (const docSnapshot of querySnapshot.docs) {
                 const eventData = docSnapshot.data();
-                const eventTitle = eventData.title;
+                const eventTitle = eventData.title || eventData.firstName || 'Untitled Event';
                 
-                if (eventTitle.toLowerCase().includes('pb and j') || 
-                    eventTitle.toLowerCase().includes('pb&j') ||
-                    eventTitle.toLowerCase().includes('peanut butter')) {
+                // Check if title exists and is a string before calling toLowerCase()
+                if (typeof eventTitle === 'string' && eventTitle.toLowerCase().includes('pb and j') || 
+                    typeof eventTitle === 'string' && eventTitle.toLowerCase().includes('pb&j') ||
+                    typeof eventTitle === 'string' && eventTitle.toLowerCase().includes('peanut butter')) {
                     console.log(`Keeping: ${eventTitle}`);
                     keptCount++;
                 } else {
