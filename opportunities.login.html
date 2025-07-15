@@ -168,6 +168,10 @@
               localStorage.setItem('volunteen_hours', JSON.stringify(hours));
               closeModal();
               alert('Signed up! Your hours are pending approval.');
+              // Refresh the events list to show updated signup status
+              if (typeof loadEvents === 'function') {
+                loadEvents();
+              }
             };
         </script>
 </body>
