@@ -133,10 +133,46 @@ function cancelSignup(eventTitle) {
     }
 }
 
+// Function to cleanup all events except PB and J
+async function cleanupAllEvents() {
+    if (confirm("This will delete ALL events except 'PB and J for Homeless'. Are you sure?")) {
+        try {
+            console.log("Starting cleanup...");
+            const querySnapshot = await getDocs(collection(db, "Events"));
+            let deletedCount = 0;
+            let keptCount = 0;
+            
+            for (const docSnapshot of querySnapshot.docs) {
+                const eventData = docSnapshot.data();
+                const eventTitle = eventData.title;
+                
+                if (eventTitle.toLowerCase().includes('pb and j') || 
+                    eventTitle.toLowerCase().includes('pb&j') ||
+                    eventTitle.toLowerCase().includes('peanut butter')) {
+                    console.log(`Keeping: ${eventTitle}`);
+                    keptCount++;
+                } else {
+                    console.log(`Deleting: ${eventTitle}`);
+                    await deleteDoc(doc(db, "Events", docSnapshot.id));
+                    deletedCount++;
+                }
+            }
+            
+            alert(`Cleanup complete!\nDeleted: ${deletedCount} events\nKept: ${keptCount} events`);
+            loadEvents(); // Refresh the page
+            
+        } catch (error) {
+            console.error("Cleanup error:", error);
+            alert("Error: " + error.message);
+        }
+    }
+}
+
 // Make functions available globally
 window.loadEvents = loadEvents;
 window.deleteEvent = deleteEvent;
 window.cancelSignup = cancelSignup;
+window.cleanupAllEvents = cleanupAllEvents;
 
 // Load events when the page loads
 document.addEventListener('DOMContentLoaded', loadEvents);

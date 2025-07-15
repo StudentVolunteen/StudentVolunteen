@@ -77,6 +77,7 @@
                     <h2>Volunteer Opportunities</h2>
                     <p class="secondary-text">Find and sign up for volunteer opportunities below.</p>
                     <button id="refresh-btn" class="btn btn-secondary" style="display:none;" onclick="loadEvents()">Refresh Events</button>
+                    <button id="cleanup-btn" class="btn btn-danger" style="display:none;" onclick="cleanupAllEvents()">🧹 Cleanup Events</button>
                 </div>
                 <div class="row" id="opportunities-list">
                     <!-- Events will be loaded dynamically from Firebase -->
@@ -118,6 +119,7 @@
               const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
               document.getElementById('create-event-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
               document.getElementById('refresh-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+              document.getElementById('cleanup-btn').style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
               
               // Hide Hours Logged link for supervisors
               const hoursLoggedLink = document.querySelector('a[href="hours.login.html"]');

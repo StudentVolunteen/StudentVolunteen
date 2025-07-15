@@ -51,9 +51,5 @@ async function cleanupEvents() {
 // Make function available globally
 window.cleanupEvents = cleanupEvents;
 
-// Auto-run cleanup when script loads
-document.addEventListener('DOMContentLoaded', () => {
-    if (confirm("This will delete all events except 'PB and J for Homeless'. Continue?")) {
-        cleanupEvents();
-    }
-}); 
+// Don't auto-run - let user click the button
+console.log("Cleanup script loaded. Click the 'Run Cleanup' button to start."); 
