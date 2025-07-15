@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Cleanup - VolunTEEN</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <script type="module" src="js/cleanup-events.js" defer></script>
+</head>
+<body class="sub_page">
+    <div class="hero_area">
+        <header class="header_section">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-lg custom_nav-container">
+                    <a class="navbar-brand" href="index.html">
+                        <span>VolunTEEN</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <section class="layout_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Event Cleanup</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-center">
+                                This page will clean up all test events from the database, keeping only the "PB and J for Homeless" event.
+                            </p>
+                            <div class="text-center">
+                                <button class="btn btn-danger" onclick="cleanupEvents()">
+                                    <i class="fa fa-trash"></i> Run Cleanup
+                                </button>
+                                <a href="opportunities.login.html" class="btn btn-secondary ml-2">
+                                    <i class="fa fa-arrow-left"></i> Back to Opportunities
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html> 
