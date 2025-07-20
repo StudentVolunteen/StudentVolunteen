@@ -14,6 +14,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Global variables for sorting
+let allEvents = [];
+let userLocation = null;
+
 // Function to fetch and display events
 async function loadEvents() {
     try {
@@ -23,12 +27,15 @@ async function loadEvents() {
         // Clear existing content
         opportunitiesList.innerHTML = '';
         
-        // Add each event to the page
+        // Store all events for sorting
+        allEvents = [];
         querySnapshot.forEach((doc) => {
             const eventData = doc.data();
-            const eventCard = createEventCard(eventData, doc.id);
-            opportunitiesList.appendChild(eventCard);
+            allEvents.push({ ...eventData, id: doc.id });
         });
+        
+        // Display events
+        displayEvents(allEvents);
         
         // If no events found, show a message
         if (querySnapshot.empty) {
@@ -46,6 +53,17 @@ async function loadEvents() {
             </div>
         `;
     }
+}
+
+// Function to display events
+function displayEvents(events) {
+    const opportunitiesList = document.getElementById('opportunities-list');
+    opportunitiesList.innerHTML = '';
+    
+    events.forEach((eventData) => {
+        const eventCard = createEventCard(eventData, eventData.id);
+        opportunitiesList.appendChild(eventCard);
+    });
 }
 
 // Function to create an event card
@@ -69,7 +87,11 @@ function createEventCard(eventData, eventId) {
     
     // Check if user has signed up for this event (for students)
     const userHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
-    const hasSignedUp = userHours.some(hour => hour.event === eventData.title);
+    const currentUser = localStorage.getItem('volunteen_current_user') || 'demo';
+    const hasSignedUp = userHours.some(hour => 
+        hour.event === eventData.title && 
+        (hour.student_email === currentUser || (currentUser === 'demo' && !hour.student_email))
+    );
     
     // Check if event is full
     const currentVolunteers = eventData.currentVolunteers || 0;
@@ -82,7 +104,10 @@ function createEventCard(eventData, eventId) {
                 <h5 class="card-title mb-0">${eventData.title}</h5>
                 <div class="btn-group">
                     ${loggedIn && hasSubAdminPermission && isEventCreator ? 
-                        `<button class="btn btn-sm btn-outline-danger" onclick="deleteEvent('${eventId}', '${eventData.title}')" title="Delete Event">
+                        `<button class="btn btn-sm btn-outline-primary" onclick="editEvent('${eventId}', '${eventData.title}')" title="Edit Event">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteEvent('${eventId}', '${eventData.title}')" title="Delete Event">
                             <i class="fa fa-trash"></i>
                         </button>` : ''
                     }
@@ -98,6 +123,7 @@ function createEventCard(eventData, eventId) {
                 <p class="card-text secondary-text">${eventData.description}</p>
                 <p class="card-text"><small class="text-muted">Supervisor: ${eventData.email}</small></p>
                 <p class="card-text"><small class="text-muted">Date: ${eventData.eventDate || 'TBD'}</small></p>
+                <p class="card-text"><small class="text-muted">Address: ${eventData.eventAddress || 'TBD'}</small></p>
                 <p class="card-text"><small class="text-muted">Volunteers: ${currentVolunteers}/${maxVolunteers}</small></p>
                 ${!hasSignedUp ? 
                     (isEventFull ? 
@@ -111,6 +137,16 @@ function createEventCard(eventData, eventId) {
     `;
     
     return col;
+}
+
+// Function to edit an event (for supervisors)
+function editEvent(eventId, eventTitle) {
+    // Store the event ID and title for editing
+    localStorage.setItem('editing_event_id', eventId);
+    localStorage.setItem('editing_event_title', eventTitle);
+    
+    // Redirect to the add opportunities page in edit mode
+    window.location.href = 'addopps.admin.html?mode=edit';
 }
 
 // Function to delete an event (for supervisors)
@@ -132,7 +168,14 @@ function cancelSignup(eventTitle) {
     if (confirm(`Are you sure you want to cancel your signup for "${eventTitle}"?`)) {
         try {
             let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
-            hours = hours.filter(hour => hour.event !== eventTitle);
+            const currentUser = localStorage.getItem('volunteen_current_user') || 'demo';
+            
+            // Remove only the current user's signup for this event
+            hours = hours.filter(hour => 
+                !(hour.event === eventTitle && 
+                  (hour.student_email === currentUser || (currentUser === 'demo' && !hour.student_email)))
+            );
+            
             localStorage.setItem('volunteen_hours', JSON.stringify(hours));
             alert("Signup cancelled successfully!");
             loadEvents(); // Refresh the events list
@@ -179,11 +222,71 @@ async function cleanupAllEvents() {
     }
 }
 
+// Function to sort events by date
+function sortByDate() {
+    const sortedEvents = [...allEvents].sort((a, b) => {
+        const dateA = new Date(a.eventDate || '9999-12-31');
+        const dateB = new Date(b.eventDate || '9999-12-31');
+        return dateA - dateB; // Closest to current date first
+    });
+    displayEvents(sortedEvents);
+}
+
+// Function to sort events by location
+async function sortByLocation() {
+    if (!userLocation) {
+        // Request user location
+        if (navigator.geolocation) {
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    });
+                });
+                
+                userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                
+                // Now sort by distance
+                sortEventsByDistance(allEvents);
+            } catch (error) {
+                alert('Location access denied or unavailable. Please enable location services to sort by distance.');
+                console.error('Geolocation error:', error);
+            }
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    } else {
+        // Use cached location
+        sortEventsByDistance(allEvents);
+    }
+}
+
+// Function to sort events by distance from user
+function sortEventsByDistance(events) {
+    // For now, we'll do a simple alphabetical sort by address
+    // In a real implementation, you'd use a geocoding service to get coordinates
+    // and calculate actual distances
+    const sortedEvents = [...events].sort((a, b) => {
+        const addressA = (a.eventAddress || '').toLowerCase();
+        const addressB = (b.eventAddress || '').toLowerCase();
+        return addressA.localeCompare(addressB);
+    });
+    displayEvents(sortedEvents);
+}
+
 // Make functions available globally
 window.loadEvents = loadEvents;
+window.editEvent = editEvent;
 window.deleteEvent = deleteEvent;
 window.cancelSignup = cancelSignup;
 window.cleanupAllEvents = cleanupAllEvents;
+window.sortByDate = sortByDate;
+window.sortByLocation = sortByLocation;
 
 // Load events when the page loads
 document.addEventListener('DOMContentLoaded', loadEvents);

@@ -98,7 +98,18 @@
                 <div class="heading_container">
                     <h2>Volunteer Opportunities</h2>
                     <p class="secondary-text">Find and sign up for volunteer opportunities below.</p>
-                    <button id="refresh-btn" class="btn btn-secondary" style="display:none;" onclick="loadEvents()">Refresh Events</button>
+                    <div class="d-flex gap-2">
+                        <button id="refresh-btn" class="btn btn-secondary" style="display:none;" onclick="loadEvents()">Refresh Events</button>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Sort Events
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item" href="#" onclick="sortByDate()">Sort by Date</a>
+                                <a class="dropdown-item" href="#" onclick="sortByLocation()">Sort by Location</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row" id="opportunities-list">
                     <!-- Events will be loaded dynamically from Firebase -->

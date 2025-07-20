@@ -86,7 +86,7 @@
       <form id="addopps-form">
         <div class="headingContainer">
           <button class="adminbtn" onclick="closePopup()"><img src="images/cross.svg" alt="cross-out" id="cross"> </button>
-          <h2>Add an Activity</h2>
+          <h2 id="form-title">Add an Activity</h2>
         </div>
         <div class="form-group">
           <label for="title">Title:</label>
@@ -111,6 +111,11 @@
         <div class="form-group">
           <label for="volunteerCount">Number of Volunteers Needed:</label>
           <input type="number" id="volunteerCount" name="volunteerCount" placeholder="Enter number" min="1" required>
+        </div>
+    
+        <div class="form-group">
+          <label for="eventAddress">Event Address:</label>
+          <input type="text" id="eventAddress" name="eventAddress" placeholder="Enter event address" required>
         </div>
     
         <div class="form-group">
