@@ -101,12 +101,12 @@
                     <div class="d-flex gap-2">
                         <button id="refresh-btn" class="btn btn-secondary" style="display:none;" onclick="loadEvents()">Refresh Events</button>
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Sort Events
+                            <button class="btn btn-primary" type="button" id="sortDropdown" onclick="toggleSortDropdown()">
+                                Sort Events ▼
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <a class="dropdown-item" href="#" onclick="sortByDate()">Sort by Date</a>
-                                <a class="dropdown-item" href="#" onclick="sortByLocation()">Sort by Location</a>
+                            <div class="dropdown-menu" id="sortDropdownMenu" style="display: none; position: absolute; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; min-width: 150px;">
+                                <a class="dropdown-item" href="#" onclick="sortByDate(); hideSortDropdown();" style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Sort by Date</a>
+                                <a class="dropdown-item" href="#" onclick="sortByLocation(); hideSortDropdown();" style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Sort by Location</a>
                             </div>
                         </div>
                     </div>
@@ -170,6 +170,29 @@
             document.getElementById('create-event-btn').onclick = function() {
               window.location.href = 'addopps.admin.html';
             };
+            
+            // Custom dropdown functions
+            function toggleSortDropdown() {
+              const dropdownMenu = document.getElementById('sortDropdownMenu');
+              if (dropdownMenu.style.display === 'none') {
+                dropdownMenu.style.display = 'block';
+              } else {
+                dropdownMenu.style.display = 'none';
+              }
+            }
+            
+            function hideSortDropdown() {
+              document.getElementById('sortDropdownMenu').style.display = 'none';
+            }
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+              const dropdown = document.querySelector('.dropdown');
+              const dropdownMenu = document.getElementById('sortDropdownMenu');
+              if (!dropdown.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+              }
+            });
             // Call updateAuthNav when page loads
             document.addEventListener('DOMContentLoaded', updateAuthNav);
             // Modal logic
