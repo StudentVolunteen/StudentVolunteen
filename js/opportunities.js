@@ -71,6 +71,11 @@ function createEventCard(eventData, eventId) {
     const userHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
     const hasSignedUp = userHours.some(hour => hour.event === eventData.title);
     
+    // Check if event is full
+    const currentVolunteers = eventData.currentVolunteers || 0;
+    const maxVolunteers = eventData.volunteerCount || 999;
+    const isEventFull = currentVolunteers >= maxVolunteers;
+    
     col.innerHTML = `
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -92,8 +97,13 @@ function createEventCard(eventData, eventId) {
             <div class="card-body">
                 <p class="card-text secondary-text">${eventData.description}</p>
                 <p class="card-text"><small class="text-muted">Supervisor: ${eventData.email}</small></p>
+                <p class="card-text"><small class="text-muted">Date: ${eventData.eventDate || 'TBD'}</small></p>
+                <p class="card-text"><small class="text-muted">Volunteers: ${currentVolunteers}/${maxVolunteers}</small></p>
                 ${!hasSignedUp ? 
-                    `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>` :
+                    (isEventFull ? 
+                        `<button class="btn btn-secondary w-100" disabled>Event Full</button>` :
+                        `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>`
+                    ) :
                     `<button class="btn btn-success w-100" disabled>Already Signed Up</button>`
                 }
             </div>

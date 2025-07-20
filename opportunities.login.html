@@ -4,6 +4,28 @@
 
 <head>
     <script type="module" src="js/opportunities.js" defer></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+            authDomain: "volunteen-438f6.firebaseapp.com",
+            projectId: "volunteen-438f6",
+            storageBucket: "volunteen-438f6.appspot.com",
+            messagingSenderId: "651971950022",
+            appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase functions available globally
+        window.db = db;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.updateDoc = updateDoc;
+    </script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, 
@@ -149,28 +171,54 @@
               document.getElementById('hoursModal').style.display = 'none';
               document.getElementById('planned-hours').value = '';
             }
-            document.getElementById('confirmHoursBtn').onclick = function() {
+            document.getElementById('confirmHoursBtn').onclick = async function() {
               const plannedHours = document.getElementById('planned-hours').value;
               if (!plannedHours) return alert('Please enter planned hours.');
-              const user = localStorage.getItem('volunteen_current_user') || 'demo';
-              const eventId = currentEvent.eventTitle + '-' + Date.now();
-              // Add to user's hours
-              let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
-              hours.push({
-                event: currentEvent.eventTitle,
-                date: new Date().toISOString().slice(0,10),
-                hours: plannedHours,
-                supervisor: currentEvent.supervisorEmail,
-                status: 'pending',
-                eventId: eventId,
-                student_email: user
-              });
-              localStorage.setItem('volunteen_hours', JSON.stringify(hours));
-              closeModal();
-              alert('Signed up! Your hours are pending approval.');
-              // Refresh the events list to show updated signup status
-              if (typeof loadEvents === 'function') {
-                loadEvents();
+              
+              try {
+                // Update volunteer count in Firebase
+                const eventRef = doc(db, "Events", currentEvent.eventId);
+                const eventDoc = await getDoc(eventRef);
+                if (eventDoc.exists()) {
+                  const eventData = eventDoc.data();
+                  const currentVolunteers = eventData.currentVolunteers || 0;
+                  const maxVolunteers = eventData.volunteerCount || 999;
+                  
+                  if (currentVolunteers >= maxVolunteers) {
+                    alert('Sorry, this event is full!');
+                    closeModal();
+                    return;
+                  }
+                  
+                  // Increment volunteer count
+                  await updateDoc(eventRef, {
+                    currentVolunteers: currentVolunteers + 1
+                  });
+                }
+                
+                const user = localStorage.getItem('volunteen_current_user') || 'demo';
+                const eventId = currentEvent.eventTitle + '-' + Date.now();
+                // Add to user's hours
+                let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+                hours.push({
+                  event: currentEvent.eventTitle,
+                  date: new Date().toISOString().slice(0,10),
+                  hours: plannedHours,
+                  supervisor: currentEvent.supervisorEmail,
+                  status: 'pending',
+                  eventId: eventId,
+                  student_email: user
+                });
+                localStorage.setItem('volunteen_hours', JSON.stringify(hours));
+                closeModal();
+                alert('Signed up! Your hours are pending approval.');
+                // Refresh the events list to show updated signup status
+                if (typeof loadEvents === 'function') {
+                  loadEvents();
+                }
+              } catch (error) {
+                console.error('Error signing up:', error);
+                alert('Error signing up. Please try again.');
               }
             };
         </script>

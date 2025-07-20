@@ -98,6 +98,19 @@
           <!-- User's logged hours will appear here -->
         </tbody>
       </table>
+      
+      <!-- Total Hours Completed Section -->
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Total Hours Completed</h5>
+              <h2 class="text-primary" id="total-hours">0</h2>
+              <p class="card-text">Total approved volunteer hours</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
   <script>
@@ -149,6 +162,17 @@
         return (h.student_email === user) || (user === 'demo' && !h.student_email);
       });
       
+      // Calculate total approved hours
+      let totalHours = 0;
+      userHours.forEach(h => {
+        if (h.status === 'approved') {
+          totalHours += parseFloat(h.hours) || 0;
+        }
+      });
+      
+      // Update total hours display
+      document.getElementById('total-hours').textContent = totalHours;
+      
       if (userHours.length === 0) {
         const tr = document.createElement('tr');
         tr.innerHTML = '<td colspan="5" class="text-center">No hours logged yet. Sign up for opportunities to get started!</td>';
@@ -182,7 +206,7 @@
           <div class="col-md-6 col-lg-3 ">
             <div class="info_detail">
               <h4>
-                Digian
+                VolunTEEN
               </h4>
               <p>
                 Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful

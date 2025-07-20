@@ -27,9 +27,11 @@ create.addEventListener("click", async (e) => {
     const title = document.getElementById('firstName').value;
     const description = document.getElementById('addDescription').value;
     const email = document.getElementById('supervisorMail').value;
+    const eventDate = document.getElementById('eventDate').value;
+    const volunteerCount = document.getElementById('volunteerCount').value;
     const password = document.getElementById('password').value;
 
-    if (!title || !description || !email || !password) {
+    if (!title || !description || !email || !eventDate || !volunteerCount || !password) {
         alert("Please fill in all fields!");
         return;
     }
@@ -40,6 +42,9 @@ create.addEventListener("click", async (e) => {
                 title,
                 description,
                 email,
+                eventDate,
+                volunteerCount: parseInt(volunteerCount),
+                currentVolunteers: 0,
                 password,
                 createdAt: new Date().toISOString()
             });
