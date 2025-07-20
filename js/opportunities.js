@@ -34,6 +34,8 @@ async function loadEvents() {
             allEvents.push({ ...eventData, id: doc.id });
         });
         
+        console.log('Loaded events:', allEvents);
+        
         // Display events
         displayEvents(allEvents);
         
@@ -57,13 +59,31 @@ async function loadEvents() {
 
 // Function to display events
 function displayEvents(events) {
+    console.log('Displaying events:', events);
     const opportunitiesList = document.getElementById('opportunities-list');
+    
+    if (!opportunitiesList) {
+        console.error('Opportunities list element not found!');
+        return;
+    }
+    
     opportunitiesList.innerHTML = '';
+    
+    if (!events || events.length === 0) {
+        opportunitiesList.innerHTML = `
+            <div class="col-12 text-center">
+                <p class="text-muted">No events to display.</p>
+            </div>
+        `;
+        return;
+    }
     
     events.forEach((eventData) => {
         const eventCard = createEventCard(eventData, eventData.id);
         opportunitiesList.appendChild(eventCard);
     });
+    
+    console.log('Events displayed successfully');
 }
 
 // Function to create an event card
@@ -224,20 +244,45 @@ async function cleanupAllEvents() {
 
 // Function to sort events by date
 function sortByDate() {
+    console.log('Sorting by date...');
+    console.log('All events:', allEvents);
+    
+    if (!allEvents || allEvents.length === 0) {
+        console.log('No events to sort');
+        return;
+    }
+    
     const sortedEvents = [...allEvents].sort((a, b) => {
-        const dateA = new Date(a.eventDate || '9999-12-31');
-        const dateB = new Date(b.eventDate || '9999-12-31');
+        const dateA = a.eventDate ? new Date(a.eventDate) : new Date('9999-12-31');
+        const dateB = b.eventDate ? new Date(b.eventDate) : new Date('9999-12-31');
+        
+        // Handle invalid dates
+        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+        if (isNaN(dateA.getTime())) return 1;
+        if (isNaN(dateB.getTime())) return -1;
+        
         return dateA - dateB; // Closest to current date first
     });
+    
+    console.log('Sorted events:', sortedEvents);
     displayEvents(sortedEvents);
 }
 
 // Function to sort events by location
 async function sortByLocation() {
+    console.log('Sorting by location...');
+    console.log('All events:', allEvents);
+    
+    if (!allEvents || allEvents.length === 0) {
+        console.log('No events to sort');
+        return;
+    }
+    
     if (!userLocation) {
         // Request user location
         if (navigator.geolocation) {
             try {
+                console.log('Requesting location...');
                 const position = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, {
                         enableHighAccuracy: true,
@@ -251,31 +296,47 @@ async function sortByLocation() {
                     lng: position.coords.longitude
                 };
                 
+                console.log('Location obtained:', userLocation);
                 // Now sort by distance
                 sortEventsByDistance(allEvents);
             } catch (error) {
-                alert('Location access denied or unavailable. Please enable location services to sort by distance.');
                 console.error('Geolocation error:', error);
+                alert('Location access denied or unavailable. Please enable location services to sort by distance.');
+                // Fallback to alphabetical sort
+                sortEventsByDistance(allEvents);
             }
         } else {
             alert('Geolocation is not supported by this browser.');
+            // Fallback to alphabetical sort
+            sortEventsByDistance(allEvents);
         }
     } else {
         // Use cached location
+        console.log('Using cached location:', userLocation);
         sortEventsByDistance(allEvents);
     }
 }
 
 // Function to sort events by distance from user
 function sortEventsByDistance(events) {
+    console.log('Sorting events by distance...');
+    
     // For now, we'll do a simple alphabetical sort by address
     // In a real implementation, you'd use a geocoding service to get coordinates
     // and calculate actual distances
     const sortedEvents = [...events].sort((a, b) => {
-        const addressA = (a.eventAddress || '').toLowerCase();
-        const addressB = (b.eventAddress || '').toLowerCase();
+        const addressA = (a.eventAddress || 'TBD').toLowerCase();
+        const addressB = (b.eventAddress || 'TBD').toLowerCase();
+        
+        // Put events without addresses at the end
+        if (addressA === 'tbd' && addressB !== 'tbd') return 1;
+        if (addressA !== 'tbd' && addressB === 'tbd') return -1;
+        if (addressA === 'tbd' && addressB === 'tbd') return 0;
+        
         return addressA.localeCompare(addressB);
     });
+    
+    console.log('Sorted events by location:', sortedEvents);
     displayEvents(sortedEvents);
 }
 
