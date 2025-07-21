@@ -209,16 +209,16 @@
             });
             // Call updateAuthNav when page loads
             document.addEventListener('DOMContentLoaded', updateAuthNav);
-            // Modal logic
+            // Modal logic - make functions globally available
             let currentEvent = null;
-            function openModal(eventTitle, supervisorEmail, eventId) {
+            window.openModal = function(eventTitle, supervisorEmail, eventId) {
               currentEvent = { eventTitle, supervisorEmail, eventId };
               document.getElementById('hoursModal').style.display = 'block';
-            }
-            function closeModal() {
+            };
+            window.closeModal = function() {
               document.getElementById('hoursModal').style.display = 'none';
               document.getElementById('planned-hours').value = '';
-            }
+            };
             document.getElementById('confirmHoursBtn').onclick = async function() {
               const plannedHours = document.getElementById('planned-hours').value;
               if (!plannedHours) return alert('Please enter planned hours.');
