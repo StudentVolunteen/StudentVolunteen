@@ -18,7 +18,7 @@ class EmailService {
             id: Date.now().toString(),
             to: supervisorEmail,
             subject: `New Volunteer Signup for "${eventTitle}"`,
-            body: this.generateEmailBody(eventTitle, studentEmail, supervisorEmail),
+            body: this.generateEmailBody(eventTitle, studentEmail, supervisorEmail, eventId),
             timestamp: new Date().toISOString(),
             eventTitle: eventTitle,
             studentEmail: studentEmail,
@@ -41,8 +41,9 @@ class EmailService {
         };
     }
 
-    generateEmailBody(eventTitle, studentEmail, supervisorEmail) {
-        const approvalUrl = `${window.location.origin}/supervisor-approval.html?email=${encodeURIComponent(supervisorEmail)}&event=${encodeURIComponent(eventTitle)}`;
+    generateEmailBody(eventTitle, studentEmail, supervisorEmail, eventId) {
+        // Create a unique URL for this specific event
+        const eventSpecificUrl = `${window.location.origin}/event-approval.html?email=${encodeURIComponent(supervisorEmail)}&event=${encodeURIComponent(eventTitle)}&eventId=${eventId}`;
         
         return `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -61,17 +62,17 @@ class EmailService {
                     </div>
                     
                     <p style="font-size: 14px; color: #666; margin-bottom: 25px;">
-                        Please review and approve or reject this volunteer's signup.
+                        Click the button below to access your event-specific approval dashboard.
                     </p>
                     
-                    <a href="${approvalUrl}" 
+                    <a href="${eventSpecificUrl}" 
                        style="display: inline-block; background-color: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">
-                        Approve Volunteers for Your Event
+                        Manage Volunteers for "${eventTitle}"
                     </a>
                     
                     <p style="font-size: 12px; color: #999; margin-top: 25px;">
                         If the button doesn't work, copy and paste this link into your browser:<br>
-                        <a href="${approvalUrl}" style="color: #007bff;">${approvalUrl}</a>
+                        <a href="${eventSpecificUrl}" style="color: #007bff;">${eventSpecificUrl}</a>
                     </p>
                 </div>
                 

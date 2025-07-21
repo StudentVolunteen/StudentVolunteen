@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VolunTEEN - Event Approval Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/responsive.css">
+</head>
+<body>
+    <!-- header section strats -->
+    <header class="header_section">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg custom_nav-container ">
+                <a class="navbar-brand" href="index.html">
+                    <img src="images/volunteenLogo.png" alt="VolunTEEN Logo" width="150">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav  ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="addopps.admin.html">Create Event</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="supervisor-inbox.html">Email Inbox</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact Us</a>
+                        </li>
+                    </ul>
+                    <div class="quote_btn-container" id="auth-buttons">
+                        <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+                        <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+                        <img src="images/login.png" alt="loginIcon" width="45">
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- end header section -->
+
+    <section class="layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2 id="event-title">Event Approval Dashboard</h2>
+                <p class="secondary-text" id="event-description">Manage volunteer approvals for your event</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Volunteer Approvals</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="volunteer-list">
+                                <!-- Volunteers will be loaded here -->
+                                <div class="text-center">
+                                    <p class="text-muted">Loading volunteers...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+            authDomain: "volunteen-438f6.firebaseapp.com",
+            projectId: "volunteen-438f6",
+            storageBucket: "volunteen-438f6.appspot.com",
+            messagingSenderId: "651971950022",
+            appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const supervisorEmail = urlParams.get('email');
+        const eventTitle = urlParams.get('event');
+        const eventId = urlParams.get('eventId');
+
+        if (!supervisorEmail || !eventTitle || !eventId) {
+            document.getElementById('volunteer-list').innerHTML = `
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> Missing required parameters. Please use the link from your email.
+                </div>
+            `;
+        } else {
+            loadEventDetails();
+            loadVolunteers();
+        }
+
+        async function loadEventDetails() {
+            try {
+                // Get event details from Firebase
+                const eventDoc = await getDoc(doc(db, "Events", eventId));
+                if (eventDoc.exists()) {
+                    const eventData = eventDoc.data();
+                    document.getElementById('event-title').textContent = `Event Approval Dashboard - ${eventData.title}`;
+                    document.getElementById('event-description').textContent = eventData.description || 'Manage volunteer approvals for your event';
+                }
+            } catch (error) {
+                console.error('Error loading event details:', error);
+            }
+        }
+
+        async function loadVolunteers() {
+            try {
+                const volunteerList = document.getElementById('volunteer-list');
+                
+                // Get all hours from localStorage
+                const allHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+                
+                // Filter for this specific event
+                const eventVolunteers = allHours.filter(hour => 
+                    hour.event === eventTitle && 
+                    hour.supervisor === supervisorEmail
+                );
+
+                if (eventVolunteers.length === 0) {
+                    volunteerList.innerHTML = `
+                        <div class="text-center">
+                            <p class="text-muted">No volunteers found for this event.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Sort by status (pending first, then approved, then rejected)
+                eventVolunteers.sort((a, b) => {
+                    const statusOrder = { 'pending': 1, 'approved': 2, 'rejected': 3 };
+                    return statusOrder[a.status] - statusOrder[b.status];
+                });
+
+                let html = `
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Date</th>
+                                    <th>Planned Hours</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                eventVolunteers.forEach(volunteer => {
+                    const statusBadge = {
+                        'pending': '<span class="badge badge-warning">Pending</span>',
+                        'approved': '<span class="badge badge-success">Approved</span>',
+                        'rejected': '<span class="badge badge-danger">Rejected</span>'
+                    }[volunteer.status] || '<span class="badge badge-secondary">Unknown</span>';
+
+                    const actionButtons = volunteer.status === 'pending' ? 
+                        `<button class="btn btn-success btn-sm mr-2" onclick="approveVolunteer('${volunteer.eventId}', '${volunteer.student_email}', '${eventTitle}')">
+                            <i class="fa fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="rejectVolunteer('${volunteer.eventId}', '${volunteer.student_email}', '${eventTitle}')">
+                            <i class="fa fa-times"></i> Reject
+                        </button>` :
+                        `<button class="btn btn-info btn-sm mr-2" onclick="changeStatus('${volunteer.eventId}', '${volunteer.student_email}', '${eventTitle}', 'approved')">
+                            <i class="fa fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="changeStatus('${volunteer.eventId}', '${volunteer.student_email}', '${eventTitle}', 'rejected')">
+                            <i class="fa fa-times"></i> Reject
+                        </button>`;
+
+                    html += `
+                        <tr>
+                            <td>${volunteer.student_email || 'demo'}</td>
+                            <td>${volunteer.date}</td>
+                            <td>${volunteer.hours}</td>
+                            <td>${statusBadge}</td>
+                            <td>${actionButtons}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                volunteerList.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading volunteers:', error);
+                document.getElementById('volunteer-list').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> Failed to load volunteers. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        // Make functions globally available
+        window.approveVolunteer = async function(eventId, studentEmail, eventTitle) {
+            await changeStatus(eventId, studentEmail, eventTitle, 'approved');
+        };
+
+        window.rejectVolunteer = async function(eventId, studentEmail, eventTitle) {
+            await changeStatus(eventId, studentEmail, eventTitle, 'rejected');
+        };
+
+        window.changeStatus = async function(eventId, studentEmail, eventTitle, newStatus) {
+            try {
+                // Update the status in localStorage
+                let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
+                const volunteerIndex = hours.findIndex(hour => 
+                    hour.eventId === eventId && 
+                    hour.student_email === studentEmail
+                );
+                
+                if (volunteerIndex !== -1) {
+                    hours[volunteerIndex].status = newStatus;
+                    localStorage.setItem('volunteen_hours', JSON.stringify(hours));
+                    
+                    // Update the UI
+                    loadVolunteers();
+                    
+                    alert(`Volunteer ${newStatus} successfully!`);
+                }
+            } catch (error) {
+                console.error('Error changing status:', error);
+                alert('Error changing status. Please try again.');
+            }
+        };
+
+        // Auth navigation
+        function updateAuthNav() {
+            const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+            document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+            document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+        }
+
+        document.getElementById('logout-btn').onclick = function() {
+            localStorage.setItem('volunteen_logged_in', 'false');
+            updateAuthNav();
+            window.location.href = 'index.html';
+        };
+
+        document.addEventListener('DOMContentLoaded', updateAuthNav);
+    </script>
+</body>
+</html> 

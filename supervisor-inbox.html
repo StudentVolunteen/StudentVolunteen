@@ -98,36 +98,36 @@
             emails.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
             let html = '';
-            emails.forEach(email => {
-                const date = new Date(email.timestamp).toLocaleString();
-                const approvalUrl = `supervisor-approval.html?email=${encodeURIComponent(email.to)}&event=${encodeURIComponent(email.eventTitle)}`;
-                
-                html += `
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h6 class="card-title">${email.subject}</h6>
-                                    <p class="card-text">
-                                        <strong>To:</strong> ${email.to}<br>
-                                        <strong>Event:</strong> ${email.eventTitle}<br>
-                                        <strong>Student:</strong> ${email.studentEmail || 'demo'}<br>
-                                        <strong>Sent:</strong> ${date}
-                                    </p>
-                                </div>
-                                <div class="col-md-4 text-right">
-                                    <a href="${approvalUrl}" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-check"></i> Review Approvals
-                                    </a>
-                                    <button class="btn btn-info btn-sm mt-2" onclick="viewEmailBody('${email.id}')">
-                                        <i class="fa fa-eye"></i> View Email
-                                    </button>
+                            emails.forEach(email => {
+                    const date = new Date(email.timestamp).toLocaleString();
+                    const eventSpecificUrl = `event-approval.html?email=${encodeURIComponent(email.to)}&event=${encodeURIComponent(email.eventTitle)}&eventId=${email.eventId}`;
+                    
+                    html += `
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">${email.subject}</h6>
+                                        <p class="card-text">
+                                            <strong>To:</strong> ${email.to}<br>
+                                            <strong>Event:</strong> ${email.eventTitle}<br>
+                                            <strong>Student:</strong> ${email.studentEmail || 'demo'}<br>
+                                            <strong>Sent:</strong> ${date}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <a href="${eventSpecificUrl}" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-check"></i> Manage Event
+                                        </a>
+                                        <button class="btn btn-info btn-sm mt-2" onclick="viewEmailBody('${email.id}')">
+                                            <i class="fa fa-eye"></i> View Email
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
             emailList.innerHTML = html;
         }
