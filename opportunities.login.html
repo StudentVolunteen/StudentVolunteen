@@ -73,6 +73,9 @@
             <li class="nav-item">
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
+            <li class="nav-item" id="inbox-link" style="display:none;">
+              <a class="nav-link" href="supervisor-inbox.html">Email Inbox</a>
+            </li>
           </ul>
           <div class="quote_btn-container" id="auth-buttons">
             <a id="login-btn" href="login.html" class="quote_btn">Login</a>
@@ -136,7 +139,12 @@
                 </div>
                 </div>
             </div>
-            <script>
+            <script type="module">
+            import EmailService from './js/email-service.js';
+            
+            // Initialize email service
+            const emailService = new EmailService();
+            
             // Simple auth state for demo
             function updateAuthNav() {
               const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
@@ -160,6 +168,12 @@
                   parentLi.style.display = (loggedIn && role === 'supervisor') ? 'none' : '';
                 }
               }
+              
+              // Show Email Inbox link for supervisors
+              const inboxLink = document.getElementById('inbox-link');
+              if (inboxLink) {
+                inboxLink.style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
+              }
             }
             document.getElementById('logout-btn').onclick = function() {
               localStorage.setItem('volunteen_logged_in', 'false');
@@ -171,19 +185,19 @@
               window.location.href = 'addopps.admin.html';
             };
             
-            // Custom dropdown functions
-            function toggleSortDropdown() {
+            // Custom dropdown functions - make them globally available
+            window.toggleSortDropdown = function() {
               const dropdownMenu = document.getElementById('sortDropdownMenu');
               if (dropdownMenu.style.display === 'none') {
                 dropdownMenu.style.display = 'block';
               } else {
                 dropdownMenu.style.display = 'none';
               }
-            }
+            };
             
-            function hideSortDropdown() {
+            window.hideSortDropdown = function() {
               document.getElementById('sortDropdownMenu').style.display = 'none';
-            }
+            };
             
             // Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
@@ -244,8 +258,33 @@
                   student_email: user
                 });
                 localStorage.setItem('volunteen_hours', JSON.stringify(hours));
+                
+                // Send email to supervisor
+                try {
+                    console.log('Attempting to send email to:', currentEvent.supervisorEmail);
+                    console.log('Event title:', currentEvent.eventTitle);
+                    console.log('Student:', user);
+                    console.log('Event ID:', eventId);
+                    
+                    const emailResult = await emailService.sendVolunteerApprovalEmail(
+                        currentEvent.supervisorEmail,
+                        currentEvent.eventTitle,
+                        user,
+                        eventId
+                    );
+                    
+                    if (emailResult.success) {
+                        console.log('Email sent successfully to supervisor:', emailResult);
+                    } else {
+                        console.error('Email service returned failure:', emailResult);
+                    }
+                } catch (emailError) {
+                    console.error('Error sending email:', emailError);
+                    // Don't fail the signup if email fails
+                }
+                
                 closeModal();
-                alert('Signed up! Your hours are pending approval.');
+                alert('Signed up! Your hours are pending approval. An email has been sent to the supervisor.');
                 // Refresh the events list to show updated signup status
                 if (typeof loadEvents === 'function') {
                   loadEvents();

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VolunTEEN - Supervisor Inbox</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/responsive.css">
+</head>
+<body>
+    <!-- header section strats -->
+    <header class="header_section">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg custom_nav-container ">
+                <a class="navbar-brand" href="index.html">
+                    <img src="images/volunteenLogo.png" alt="VolunTEEN Logo" width="150">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav  ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="opportunities.login.html">Opportunities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="addopps.admin.html">Create Event</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact Us</a>
+                        </li>
+                    </ul>
+                    <div class="quote_btn-container" id="auth-buttons">
+                        <a id="login-btn" href="login.html" class="quote_btn">Login</a>
+                        <a id="logout-btn" href="#" class="quote_btn" style="display:none;">Logout</a>
+                        <img src="images/login.png" alt="loginIcon" width="45">
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- end header section -->
+
+    <section class="layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2>Supervisor Email Inbox</h2>
+                <p class="secondary-text">View all volunteer approval emails sent to supervisors</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Sent Emails</h5>
+                            <button class="btn btn-danger btn-sm" onclick="clearAllEmails()">
+                                <i class="fa fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="email-list">
+                                <!-- Emails will be loaded here -->
+                                <div class="text-center">
+                                    <p class="text-muted">Loading emails...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import EmailService from './js/email-service.js';
+
+        const emailService = new EmailService();
+
+        function loadEmails() {
+            const emailList = document.getElementById('email-list');
+            const emails = emailService.getSentEmails();
+
+            if (emails.length === 0) {
+                emailList.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-muted">No emails sent yet. Emails will appear here when students sign up for events.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort emails by timestamp (newest first)
+            emails.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            let html = '';
+            emails.forEach(email => {
+                const date = new Date(email.timestamp).toLocaleString();
+                const approvalUrl = `supervisor-approval.html?email=${encodeURIComponent(email.to)}&event=${encodeURIComponent(email.eventTitle)}`;
+                
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="card-title">${email.subject}</h6>
+                                    <p class="card-text">
+                                        <strong>To:</strong> ${email.to}<br>
+                                        <strong>Event:</strong> ${email.eventTitle}<br>
+                                        <strong>Student:</strong> ${email.studentEmail || 'demo'}<br>
+                                        <strong>Sent:</strong> ${date}
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <a href="${approvalUrl}" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-check"></i> Review Approvals
+                                    </a>
+                                    <button class="btn btn-info btn-sm mt-2" onclick="viewEmailBody('${email.id}')">
+                                        <i class="fa fa-eye"></i> View Email
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            emailList.innerHTML = html;
+        }
+
+        // Make functions globally available
+        window.clearAllEmails = function() {
+            if (confirm('Are you sure you want to clear all emails? This action cannot be undone.')) {
+                emailService.clearSentEmails();
+                loadEmails();
+                alert('All emails cleared successfully!');
+            }
+        };
+
+        window.viewEmailBody = function(emailId) {
+            const emails = emailService.getSentEmails();
+            const email = emails.find(e => e.id === emailId);
+            
+            if (email) {
+                const emailWindow = window.open('', '_blank', 'width=800,height=600');
+                emailWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Email: ${email.subject}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                .email-container { max-width: 600px; margin: 0 auto; }
+                                .header { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+                                .email-body { border: 1px solid #ddd; padding: 20px; border-radius: 5px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="email-container">
+                                <div class="header">
+                                    <h3>${email.subject}</h3>
+                                    <p><strong>To:</strong> ${email.to}</p>
+                                    <p><strong>Sent:</strong> ${new Date(email.timestamp).toLocaleString()}</p>
+                                </div>
+                                <div class="email-body">
+                                    ${email.body}
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                emailWindow.document.close();
+            }
+        };
+
+        // Auth navigation
+        function updateAuthNav() {
+            const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+            document.getElementById('login-btn').style.display = loggedIn ? 'none' : '';
+            document.getElementById('logout-btn').style.display = loggedIn ? '' : 'none';
+        }
+
+        document.getElementById('logout-btn').onclick = function() {
+            localStorage.setItem('volunteen_logged_in', 'false');
+            updateAuthNav();
+            window.location.href = 'index.html';
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthNav();
+            loadEmails();
+        });
+    </script>
+</body>
+</html> 
