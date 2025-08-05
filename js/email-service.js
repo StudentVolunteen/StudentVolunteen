@@ -207,7 +207,7 @@ class EmailService {
 
             // Test with minimal parameters
             const testParams = {
-                to_email: 'test@example.com', // Add test email
+                to_email: 'volunteen.company@gmail.com', // Use real email for testing
                 supervisor_name: 'Test User',
                 event_title: 'Test Event',
                 student_name: 'Test Student',
