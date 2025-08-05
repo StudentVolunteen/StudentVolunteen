@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin - VolunTEEN</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Admin Test Page</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>Current Status:</h5>
+                            <div id="status"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button id="setAdminBtn" class="btn btn-primary">Set Admin Permissions</button>
+                            <button id="testAdminBtn" class="btn btn-success">Test Admin Access</button>
+                            <button id="goToOpportunitiesBtn" class="btn btn-info">Go to Opportunities</button>
+                        </div>
+                        
+                        <div id="result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const statusDiv = document.getElementById('status');
+            const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+            const currentUser = localStorage.getItem('volunteen_current_user');
+            const role = localStorage.getItem('volunteen_current_role');
+            const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+            const isAdmin = currentUser === 'volunteen.company@gmail.com';
+            
+            statusDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <p><strong>Logged In:</strong> ${loggedIn}</p>
+                    <p><strong>Current User:</strong> ${currentUser || 'None'}</p>
+                    <p><strong>Role:</strong> ${role || 'None'}</p>
+                    <p><strong>Permissions:</strong> ${JSON.stringify(permissions)}</p>
+                    <p><strong>Is Admin:</strong> ${isAdmin}</p>
+                </div>
+            `;
+        }
+        
+        document.getElementById('setAdminBtn').addEventListener('click', () => {
+            localStorage.setItem('volunteen_logged_in', 'true');
+            localStorage.setItem('volunteen_current_user', 'volunteen.company@gmail.com');
+            localStorage.setItem('volunteen_current_role', 'admin');
+            localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
+            
+            document.getElementById('result').innerHTML = `
+                <div class="alert alert-success">
+                    <h4>✅ Admin permissions set!</h4>
+                    <p>You can now test the admin features.</p>
+                </div>
+            `;
+            
+            updateStatus();
+        });
+        
+        document.getElementById('testAdminBtn').addEventListener('click', () => {
+            const currentUser = localStorage.getItem('volunteen_current_user');
+            const isAdmin = currentUser === 'volunteen.company@gmail.com';
+            
+            if (isAdmin) {
+                document.getElementById('result').innerHTML = `
+                    <div class="alert alert-success">
+                        <h4>✅ Admin access confirmed!</h4>
+                        <p>You should see delete buttons on all events in the Opportunities page.</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Not admin!</h4>
+                        <p>Current user: ${currentUser}</p>
+                        <p>Click "Set Admin Permissions" first.</p>
+                    </div>
+                `;
+            }
+        });
+        
+        document.getElementById('goToOpportunitiesBtn').addEventListener('click', () => {
+            window.location.href = 'opportunities.login.html';
+        });
+        
+        // Update status on page load
+        updateStatus();
+    </script>
+</body>
+</html> 

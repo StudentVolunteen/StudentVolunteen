@@ -177,6 +177,11 @@ function createEventCard(eventData, eventId) {
         </div>
     `;
     
+    // Debug: Log admin status for this card
+    if (isAdmin) {
+        console.log(`Admin buttons should be visible for event: ${eventData.title}`);
+    }
+    
     return col;
 }
 
