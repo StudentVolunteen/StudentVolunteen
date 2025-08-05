@@ -22,6 +22,9 @@ class EmailService {
                 emailjs.init(this.publicKey);
                 console.log('EmailJS initialized successfully');
             };
+            script.onerror = () => {
+                console.error('Failed to load EmailJS SDK');
+            };
             document.head.appendChild(script);
         } else {
             emailjs.init(this.publicKey);
@@ -39,14 +42,25 @@ class EmailService {
                 return this.sendMockEmail(eventData, studentData, hours);
             }
 
+            // Validate required data
+            if (!eventData.supervisorMail) {
+                console.error('Missing supervisor email');
+                return { success: false, message: 'Missing supervisor email' };
+            }
+
+            if (!studentData.student_name) {
+                console.error('Missing student name');
+                return { success: false, message: 'Missing student name' };
+            }
+
             // Prepare template parameters
             const templateParams = {
                 supervisor_name: eventData.supervisorMail.split('@')[0], // Extract name from email
-                event_title: eventData.firstName,
+                event_title: eventData.firstName || eventData.title || 'Unknown Event',
                 student_name: studentData.student_name,
                 hours: hours,
-                event_date: eventData.eventDate,
-                approval_link: `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventData.firstName)}&eventId=${eventData.id}`
+                event_date: eventData.eventDate || new Date().toISOString().slice(0,10),
+                approval_link: `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventData.firstName || eventData.title)}&eventId=${eventData.id}`
             };
 
             console.log('Template parameters:', templateParams);
@@ -73,6 +87,22 @@ class EmailService {
                 stack: error.stack
             });
             
+            // Check for specific error types
+            if (error.code === 'INVALID_SERVICE_ID') {
+                console.error('Invalid EmailJS service ID');
+                return { success: false, message: 'Invalid EmailJS service configuration' };
+            }
+            
+            if (error.code === 'INVALID_TEMPLATE_ID') {
+                console.error('Invalid EmailJS template ID');
+                return { success: false, message: 'Invalid EmailJS template configuration' };
+            }
+            
+            if (error.code === 'INVALID_PUBLIC_KEY') {
+                console.error('Invalid EmailJS public key');
+                return { success: false, message: 'Invalid EmailJS authentication' };
+            }
+            
             // Fallback to mock email
             console.log('Falling back to mock email...');
             return this.sendMockEmail(eventData, studentData, hours);
@@ -81,14 +111,15 @@ class EmailService {
 
     sendMockEmail(eventData, studentData, hours) {
         try {
+            const eventTitle = eventData.firstName || eventData.title || 'Unknown Event';
             const emailData = {
                 id: Date.now(),
                 to: eventData.supervisorMail,
-                subject: `Volunteer Approval Request - ${eventData.firstName}`,
+                subject: `Volunteer Approval Request - ${eventTitle}`,
                 body: this.generateEmailBody(eventData, studentData, hours),
                 timestamp: new Date().toISOString(),
                 eventId: eventData.id,
-                eventTitle: eventData.firstName,
+                eventTitle: eventTitle,
                 supervisorEmail: eventData.supervisorMail
             };
 
@@ -106,7 +137,8 @@ class EmailService {
     }
 
     generateEmailBody(eventData, studentData, hours) {
-        const approvalLink = `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventData.firstName)}&eventId=${eventData.id}`;
+        const eventTitle = eventData.firstName || eventData.title || 'Unknown Event';
+        const approvalLink = `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventTitle)}&eventId=${eventData.id}`;
         
         return `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
@@ -122,7 +154,7 @@ class EmailService {
                     
                     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
                         <h3>Event Details:</h3>
-                        <p><strong>Event:</strong> ${eventData.firstName}</p>
+                        <p><strong>Event:</strong> ${eventTitle}</p>
                         <p><strong>Student:</strong> ${studentData.student_name}</p>
                         <p><strong>Hours Requested:</strong> ${hours} hours</p>
                         <p><strong>Date:</strong> ${eventData.eventDate}</p>
@@ -172,6 +204,7 @@ class EmailService {
                 return { success: false, message: 'EmailJS not loaded' };
             }
 
+            // Test with minimal parameters
             const testParams = {
                 supervisor_name: 'Test User',
                 event_title: 'Test Event',
@@ -180,6 +213,9 @@ class EmailService {
                 event_date: '2024-01-01',
                 approval_link: 'https://example.com'
             };
+
+            console.log('Sending test email with params:', testParams);
+            console.log('Using config:', { serviceId: this.serviceId, templateId: this.templateId, publicKey: this.publicKey });
 
             const response = await emailjs.send(
                 this.serviceId,
@@ -191,8 +227,51 @@ class EmailService {
             return { success: true, message: 'EmailJS test successful' };
         } catch (error) {
             console.error('EmailJS test failed:', error);
+            console.error('Error details:', {
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
+            
+            // Provide specific error messages
+            if (error.code === 'INVALID_SERVICE_ID') {
+                return { success: false, message: 'Invalid EmailJS service ID - please check configuration' };
+            }
+            
+            if (error.code === 'INVALID_TEMPLATE_ID') {
+                return { success: false, message: 'Invalid EmailJS template ID - please check configuration' };
+            }
+            
+            if (error.code === 'INVALID_PUBLIC_KEY') {
+                return { success: false, message: 'Invalid EmailJS public key - please check configuration' };
+            }
+            
             return { success: false, message: `EmailJS test failed: ${error.message}` };
         }
+    }
+
+    // Simple configuration test
+    testConfiguration() {
+        const config = {
+            serviceId: this.serviceId,
+            templateId: this.templateId,
+            publicKey: this.publicKey,
+            emailjsLoaded: typeof emailjs !== 'undefined'
+        };
+        
+        console.log('EmailJS Configuration Test:', config);
+        
+        const issues = [];
+        if (!this.serviceId) issues.push('Missing service ID');
+        if (!this.templateId) issues.push('Missing template ID');
+        if (!this.publicKey) issues.push('Missing public key');
+        if (typeof emailjs === 'undefined') issues.push('EmailJS not loaded');
+        
+        return {
+            success: issues.length === 0,
+            config: config,
+            issues: issues
+        };
     }
 }
 

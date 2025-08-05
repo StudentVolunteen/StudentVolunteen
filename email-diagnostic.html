@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Diagnostic - VolunTEEN</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Email Diagnostic Tool</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>Configuration Check:</h5>
+                            <div id="config-check"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>EmailJS Test:</h5>
+                            <button id="testConfigBtn" class="btn btn-info">Test Configuration</button>
+                            <button id="testEmailJSBtn" class="btn btn-primary">Test EmailJS Connection</button>
+                            <button id="sendTestEmailBtn" class="btn btn-success">Send Test Email</button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Mock Email Test:</h5>
+                            <button id="testMockEmailBtn" class="btn btn-warning">Test Mock Email</button>
+                            <button id="clearEmailsBtn" class="btn btn-danger">Clear Stored Emails</button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Stored Emails:</h5>
+                            <div id="stored-emails"></div>
+                        </div>
+                        
+                        <div id="result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import EmailService from './js/email-service.js';
+
+        const emailService = new EmailService();
+        
+        // Test configuration
+        document.getElementById('testConfigBtn').addEventListener('click', () => {
+            const result = emailService.testConfiguration();
+            const resultDiv = document.getElementById('result');
+            
+            if (result.success) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h4>✅ Configuration Valid</h4>
+                        <pre>${JSON.stringify(result.config, null, 2)}</pre>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Configuration Issues Found</h4>
+                        <ul>${result.issues.map(issue => `<li>${issue}</li>`).join('')}</ul>
+                        <pre>${JSON.stringify(result.config, null, 2)}</pre>
+                    </div>
+                `;
+            }
+        });
+        
+        // Test EmailJS connection
+        document.getElementById('testEmailJSBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Testing EmailJS connection...</div>';
+            
+            try {
+                const result = await emailService.testEmailJS();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>✅ EmailJS Test Successful!</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>❌ EmailJS Test Failed</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Error Testing EmailJS</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Send test email
+        document.getElementById('sendTestEmailBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Sending test email...</div>';
+            
+            try {
+                const testEventData = {
+                    firstName: 'Test Event',
+                    supervisorMail: 'test@example.com',
+                    eventDate: '2024-01-01',
+                    id: 'test-123'
+                };
+                
+                const testStudentData = {
+                    student_name: 'Test Student',
+                    student_email: 'student@example.com'
+                };
+                
+                const result = await emailService.sendVolunteerApprovalEmail(testEventData, testStudentData, '2');
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>✅ Test Email Sent!</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>❌ Test Email Failed</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Error Sending Test Email</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Test mock email
+        document.getElementById('testMockEmailBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Testing mock email...</div>';
+            
+            try {
+                const testEventData = {
+                    firstName: 'Test Event',
+                    supervisorMail: 'test@example.com',
+                    eventDate: '2024-01-01',
+                    id: 'test-123'
+                };
+                
+                const testStudentData = {
+                    student_name: 'Test Student',
+                    student_email: 'student@example.com'
+                };
+                
+                const result = emailService.sendMockEmail(testEventData, testStudentData, '2');
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>✅ Mock Email Test Successful!</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                    updateStoredEmails();
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>❌ Mock Email Test Failed</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Error Testing Mock Email</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Clear stored emails
+        document.getElementById('clearEmailsBtn').addEventListener('click', () => {
+            emailService.clearSentEmails();
+            updateStoredEmails();
+            document.getElementById('result').innerHTML = `
+                <div class="alert alert-success">
+                    <h4>✅ Stored Emails Cleared</h4>
+                </div>
+            `;
+        });
+        
+        // Update stored emails display
+        function updateStoredEmails() {
+            const emails = emailService.getSentEmails();
+            const emailsDiv = document.getElementById('stored-emails');
+            
+            if (emails.length === 0) {
+                emailsDiv.innerHTML = '<p class="text-muted">No stored emails</p>';
+            } else {
+                emailsDiv.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>To</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Event</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${emails.map(email => `
+                                    <tr>
+                                        <td>${email.to}</td>
+                                        <td>${email.subject}</td>
+                                        <td>${new Date(email.timestamp).toLocaleString()}</td>
+                                        <td>${email.eventTitle}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initial display
+        updateStoredEmails();
+    </script>
+</body>
+</html> 

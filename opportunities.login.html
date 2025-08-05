@@ -270,23 +270,35 @@
                     // Get event data for email
                     const eventRef = doc(db, "Events", currentEvent.eventId);
                     const eventDoc = await getDoc(eventRef);
-                    const eventData = eventDoc.exists() ? eventDoc.data() : {
+                    const eventData = eventDoc.exists() ? {
+                        ...eventDoc.data(),
+                        firstName: eventDoc.data().title, // Map title to firstName for email service
+                        supervisorMail: eventDoc.data().email, // Map email to supervisorMail for email service
+                        id: currentEvent.eventId
+                    } : {
                         firstName: currentEvent.eventTitle,
                         supervisorMail: currentEvent.supervisorEmail,
                         eventDate: new Date().toISOString().slice(0,10),
                         id: eventId
                     };
                     
+                    console.log('Event data for email:', eventData);
+                    
                     const studentData = {
                         student_name: user,
                         student_email: user
                     };
+                    
+                    console.log('Student data for email:', studentData);
+                    console.log('Planned hours:', plannedHours);
                     
                     const emailResult = await emailService.sendVolunteerApprovalEmail(
                         eventData,
                         studentData,
                         plannedHours
                     );
+                    
+                    console.log('Email result:', emailResult);
                     
                     if (emailResult.success) {
                         console.log('Email sent successfully to supervisor:', emailResult);
@@ -295,6 +307,10 @@
                     }
                 } catch (emailError) {
                     console.error('Error sending email:', emailError);
+                    console.error('Email error details:', {
+                        message: emailError.message,
+                        stack: emailError.stack
+                    });
                     // Don't fail the signup if email fails
                 }
                 
