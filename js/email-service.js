@@ -1,7 +1,7 @@
 // EmailJS Configuration
 const EMAILJS_CONFIG = {
     serviceId: 'service_j8udg93',
-    templateId: 'service_j8udg93', // This should be your template ID, not service ID
+    templateId: 'template_a32mu4y', // Correct template ID
     publicKey: 'ABPmaI32bL70ViO06'
 };
 
