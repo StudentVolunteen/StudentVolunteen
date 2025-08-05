@@ -60,12 +60,14 @@ login.addEventListener("click", function (event) {
       localStorage.setItem('volunteen_current_user', email);
       localStorage.setItem('volunteen_current_role', 'admin');
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
+      console.log('Admin account logged in:', email);
     } else {
       // Regular user login
       localStorage.setItem('volunteen_logged_in', 'true');
       localStorage.setItem('volunteen_current_user', email);
       localStorage.setItem('volunteen_current_role', 'student');
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['student']));
+      console.log('Regular user logged in:', email);
     }
     
     window.location.href = "index.login.html";

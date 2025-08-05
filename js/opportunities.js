@@ -105,6 +105,16 @@ function createEventCard(eventData, eventId) {
     // Check if user is admin (volunteen.company@gmail.com)
     const isAdmin = currentUserEmail === 'volunteen.company@gmail.com';
     
+    // Debug logging
+    console.log('User permissions check:', {
+        loggedIn,
+        currentUserEmail,
+        role,
+        permissions,
+        hasSubAdminPermission,
+        isAdmin
+    });
+    
     // Check if user is the creator of this event (for supervisors)
     const isEventCreator = eventData.email === currentUserEmail;
     
@@ -435,6 +445,15 @@ window.sortByDate = sortByDate;
 window.sortByLocation = sortByLocation;
 
 // Load events when the page loads
-document.addEventListener('DOMContentLoaded', loadEvents);
+document.addEventListener('DOMContentLoaded', function() {
+    // Debug: Check if admin is logged in
+    const currentUser = localStorage.getItem('volunteen_current_user');
+    const isLoggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+    console.log('Page loaded - Current user:', currentUser);
+    console.log('Is logged in:', isLoggedIn);
+    console.log('Is admin:', currentUser === 'volunteen.company@gmail.com');
+    
+    loadEvents();
+});
 
   
