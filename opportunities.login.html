@@ -7,6 +7,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+        import EmailService from './js/email-service.js';
+        
+        // Initialize EmailService
+        const emailService = new EmailService();
+        window.emailService = emailService;
         
         const firebaseConfig = {
             apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
@@ -140,10 +145,6 @@
                 </div>
             </div>
             <script type="module">
-            import EmailService from './js/email-service.js';
-            
-            // Initialize email service
-            const emailService = new EmailService();
             
             // Simple auth state for demo
             function updateAuthNav() {
