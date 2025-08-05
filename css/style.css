@@ -286,9 +286,14 @@ a:focus {
           align-items: center;
 }
 
+.carousel-inner {
+  height: 515px;
+}
+
 .slider_section #customCarousel1 {
   width: 100%;
   position: unset;
+  height: 650px;
 }
 
 .slider_section .detail-box {
