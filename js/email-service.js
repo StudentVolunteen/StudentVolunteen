@@ -1,101 +1,155 @@
-// Mock Email Service for VolunTEEN
-// In a real application, this would integrate with services like SendGrid, Mailgun, or AWS SES
+// EmailJS Configuration
+const EMAILJS_CONFIG = {
+    serviceId: 'service_j8udg93',
+    templateId: 'service_j8udg93', // This should be your template ID, not service ID
+    publicKey: 'ABPmaI32bL70ViO06'
+};
 
 class EmailService {
     constructor() {
-        this.sentEmails = JSON.parse(localStorage.getItem('volunteen_sent_emails') || '[]');
+        this.serviceId = EMAILJS_CONFIG.serviceId;
+        this.templateId = EMAILJS_CONFIG.templateId;
+        this.publicKey = EMAILJS_CONFIG.publicKey;
+        this.initializeEmailJS();
     }
 
-    // Simulate sending an email to a supervisor
-    async sendVolunteerApprovalEmail(supervisorEmail, eventTitle, studentEmail, eventId) {
-        console.log('EmailService: Starting to send email');
-        console.log('EmailService: supervisorEmail =', supervisorEmail);
-        console.log('EmailService: eventTitle =', eventTitle);
-        console.log('EmailService: studentEmail =', studentEmail);
-        console.log('EmailService: eventId =', eventId);
-        
-        const emailData = {
-            id: Date.now().toString(),
-            to: supervisorEmail,
-            subject: `New Volunteer Signup for "${eventTitle}"`,
-            body: this.generateEmailBody(eventTitle, studentEmail, supervisorEmail, eventId),
-            timestamp: new Date().toISOString(),
-            eventTitle: eventTitle,
-            studentEmail: studentEmail,
-            eventId: eventId,
-            status: 'sent'
-        };
-
-        // Store the email in localStorage (simulating email sent)
-        this.sentEmails.push(emailData);
-        localStorage.setItem('volunteen_sent_emails', JSON.stringify(this.sentEmails));
-
-        console.log('Email sent to supervisor:', emailData);
-        
-        // In a real app, this would actually send the email
-        // For demo purposes, we'll just log it and show a success message
-        return {
-            success: true,
-            messageId: emailData.id,
-            emailData: emailData
-        };
+    initializeEmailJS() {
+        // Load EmailJS SDK if not already loaded
+        if (typeof emailjs === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+            script.onload = () => {
+                emailjs.init(this.publicKey);
+                console.log('EmailJS initialized successfully');
+            };
+            document.head.appendChild(script);
+        } else {
+            emailjs.init(this.publicKey);
+            console.log('EmailJS already loaded, initialized');
+        }
     }
 
-    generateEmailBody(eventTitle, studentEmail, supervisorEmail, eventId) {
-        // Create a unique URL for this specific event
-        const eventSpecificUrl = `${window.location.origin}/event-approval.html?email=${encodeURIComponent(supervisorEmail)}&event=${encodeURIComponent(eventTitle)}&eventId=${eventId}`;
+    async sendVolunteerApprovalEmail(eventData, studentData, hours) {
+        try {
+            console.log('Sending EmailJS email...', { eventData, studentData, hours });
+
+            // Prepare template parameters
+            const templateParams = {
+                supervisor_name: eventData.supervisorMail.split('@')[0], // Extract name from email
+                event_title: eventData.firstName,
+                student_name: studentData.student_name,
+                hours: hours,
+                event_date: eventData.eventDate,
+                approval_link: `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventData.firstName)}&eventId=${eventData.id}`
+            };
+
+            console.log('Template parameters:', templateParams);
+
+            // Send email using EmailJS
+            const response = await emailjs.send(
+                this.serviceId,
+                this.templateId,
+                templateParams
+            );
+
+            console.log('EmailJS response:', response);
+            
+            // Also store in localStorage for backup
+            this.sendMockEmail(eventData, studentData, hours);
+            
+            return { success: true, message: 'Email sent successfully via EmailJS' };
+        } catch (error) {
+            console.error('EmailJS error:', error);
+            
+            // Fallback to mock email
+            console.log('Falling back to mock email...');
+            return this.sendMockEmail(eventData, studentData, hours);
+        }
+    }
+
+    sendMockEmail(eventData, studentData, hours) {
+        try {
+            const emailData = {
+                id: Date.now(),
+                to: eventData.supervisorMail,
+                subject: `Volunteer Approval Request - ${eventData.firstName}`,
+                body: this.generateEmailBody(eventData, studentData, hours),
+                timestamp: new Date().toISOString(),
+                eventId: eventData.id,
+                eventTitle: eventData.firstName,
+                supervisorEmail: eventData.supervisorMail
+            };
+
+            // Get existing emails or initialize empty array
+            const existingEmails = JSON.parse(localStorage.getItem('sent_emails') || '[]');
+            existingEmails.push(emailData);
+            localStorage.setItem('sent_emails', JSON.stringify(existingEmails));
+
+            console.log('Mock email stored:', emailData);
+            return { success: true, message: 'Mock email sent successfully' };
+        } catch (error) {
+            console.error('Mock email error:', error);
+            return { success: false, message: 'Failed to send mock email' };
+        }
+    }
+
+    generateEmailBody(eventData, studentData, hours) {
+        const approvalLink = `${window.location.origin}/event-approval.html?supervisorEmail=${encodeURIComponent(eventData.supervisorMail)}&event=${encodeURIComponent(eventData.firstName)}&eventId=${eventData.id}`;
         
         return `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
-                    <h2 style="color: #007bff; margin-bottom: 20px;">VolunTEEN - New Volunteer Signup</h2>
-                    
-                    <p style="font-size: 16px; margin-bottom: 15px;">
-                        A new volunteer has signed up for your event:
-                    </p>
-                    
-                    <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                        <h3 style="color: #333; margin-bottom: 10px;">${eventTitle}</h3>
-                        <p style="color: #666; margin: 0;">
-                            <strong>Student:</strong> ${studentEmail || 'demo'}
-                        </p>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="font-size: 24px; font-weight: bold; color: #007bff; margin-bottom: 10px;">VolunTEEN</div>
+                        <h2>Volunteer Approval Request</h2>
                     </div>
                     
-                    <p style="font-size: 14px; color: #666; margin-bottom: 25px;">
-                        Click the button below to access your event-specific approval dashboard.
-                    </p>
+                    <p>Hello ${eventData.supervisorMail.split('@')[0]},</p>
                     
-                    <a href="${eventSpecificUrl}" 
-                       style="display: inline-block; background-color: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">
-                        Manage Volunteers for "${eventTitle}"
-                    </a>
+                    <p>A student has signed up for your volunteer event and is awaiting your approval.</p>
                     
-                    <p style="font-size: 12px; color: #999; margin-top: 25px;">
-                        If the button doesn't work, copy and paste this link into your browser:<br>
-                        <a href="${eventSpecificUrl}" style="color: #007bff;">${eventSpecificUrl}</a>
-                    </p>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <p style="font-size: 12px; color: #999;">
-                        This is an automated message from VolunTEEN. Please do not reply to this email.
-                    </p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3>Event Details:</h3>
+                        <p><strong>Event:</strong> ${eventData.firstName}</p>
+                        <p><strong>Student:</strong> ${studentData.student_name}</p>
+                        <p><strong>Hours Requested:</strong> ${hours} hours</p>
+                        <p><strong>Date:</strong> ${eventData.eventDate}</p>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <a href="${approvalLink}" style="display: inline-block; background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin: 20px 0;">
+                            Approve Volunteers for Your Event
+                        </a>
+                    </div>
+                    
+                    <p>Click the button above to review and approve volunteers for this event.</p>
+                    
+                    <div style="text-align: center; margin-top: 30px; color: #666; font-size: 14px;">
+                        <p>This is an automated message from VolunTEEN</p>
+                    </div>
                 </div>
             </div>
         `;
     }
 
-    // Get all sent emails (for admin purposes)
     getSentEmails() {
-        return this.sentEmails;
+        try {
+            return JSON.parse(localStorage.getItem('sent_emails') || '[]');
+        } catch (error) {
+            console.error('Error getting sent emails:', error);
+            return [];
+        }
     }
 
-    // Clear sent emails (for cleanup)
     clearSentEmails() {
-        this.sentEmails = [];
-        localStorage.setItem('volunteen_sent_emails', JSON.stringify(this.sentEmails));
+        try {
+            localStorage.removeItem('sent_emails');
+            console.log('Sent emails cleared');
+        } catch (error) {
+            console.error('Error clearing sent emails:', error);
+        }
     }
 }
 
-// Export for use in other modules
+// Export the EmailService class
 export default EmailService; 

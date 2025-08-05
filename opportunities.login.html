@@ -266,11 +266,25 @@
                     console.log('Student:', user);
                     console.log('Event ID:', eventId);
                     
+                    // Get event data for email
+                    const eventRef = doc(db, "Events", currentEvent.eventId);
+                    const eventDoc = await getDoc(eventRef);
+                    const eventData = eventDoc.exists() ? eventDoc.data() : {
+                        firstName: currentEvent.eventTitle,
+                        supervisorMail: currentEvent.supervisorEmail,
+                        eventDate: new Date().toISOString().slice(0,10),
+                        id: eventId
+                    };
+                    
+                    const studentData = {
+                        student_name: user,
+                        student_email: user
+                    };
+                    
                     const emailResult = await emailService.sendVolunteerApprovalEmail(
-                        currentEvent.supervisorEmail,
-                        currentEvent.eventTitle,
-                        user,
-                        eventId
+                        eventData,
+                        studentData,
+                        plannedHours
                     );
                     
                     if (emailResult.success) {
