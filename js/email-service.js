@@ -55,6 +55,7 @@ class EmailService {
 
             // Prepare template parameters
             const templateParams = {
+                to_email: eventData.supervisorMail, // Add supervisor email for EmailJS template
                 supervisor_name: eventData.supervisorMail.split('@')[0], // Extract name from email
                 event_title: eventData.firstName || eventData.title || 'Unknown Event',
                 student_name: studentData.student_name,
@@ -206,6 +207,7 @@ class EmailService {
 
             // Test with minimal parameters
             const testParams = {
+                to_email: 'test@example.com', // Add test email
                 supervisor_name: 'Test User',
                 event_title: 'Test Event',
                 student_name: 'Test Student',
