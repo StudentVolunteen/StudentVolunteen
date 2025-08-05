@@ -33,6 +33,12 @@ class EmailService {
         try {
             console.log('Sending EmailJS email...', { eventData, studentData, hours });
 
+            // Check if EmailJS is loaded
+            if (typeof emailjs === 'undefined') {
+                console.error('EmailJS not loaded, falling back to mock email');
+                return this.sendMockEmail(eventData, studentData, hours);
+            }
+
             // Prepare template parameters
             const templateParams = {
                 supervisor_name: eventData.supervisorMail.split('@')[0], // Extract name from email
@@ -44,6 +50,7 @@ class EmailService {
             };
 
             console.log('Template parameters:', templateParams);
+            console.log('EmailJS config:', { serviceId: this.serviceId, templateId: this.templateId, publicKey: this.publicKey });
 
             // Send email using EmailJS
             const response = await emailjs.send(
@@ -60,6 +67,11 @@ class EmailService {
             return { success: true, message: 'Email sent successfully via EmailJS' };
         } catch (error) {
             console.error('EmailJS error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
             
             // Fallback to mock email
             console.log('Falling back to mock email...');
@@ -147,6 +159,39 @@ class EmailService {
             console.log('Sent emails cleared');
         } catch (error) {
             console.error('Error clearing sent emails:', error);
+        }
+    }
+
+    // Test EmailJS connection
+    async testEmailJS() {
+        try {
+            console.log('Testing EmailJS connection...');
+            
+            if (typeof emailjs === 'undefined') {
+                console.error('EmailJS not loaded');
+                return { success: false, message: 'EmailJS not loaded' };
+            }
+
+            const testParams = {
+                supervisor_name: 'Test User',
+                event_title: 'Test Event',
+                student_name: 'Test Student',
+                hours: '2',
+                event_date: '2024-01-01',
+                approval_link: 'https://example.com'
+            };
+
+            const response = await emailjs.send(
+                this.serviceId,
+                this.templateId,
+                testParams
+            );
+
+            console.log('EmailJS test successful:', response);
+            return { success: true, message: 'EmailJS test successful' };
+        } catch (error) {
+            console.error('EmailJS test failed:', error);
+            return { success: false, message: `EmailJS test failed: ${error.message}` };
         }
     }
 }

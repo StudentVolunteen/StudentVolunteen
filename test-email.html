@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test EmailJS - VolunTEEN</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">EmailJS Test</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>EmailJS Configuration:</h5>
+                            <div id="config"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button id="testEmailJSBtn" class="btn btn-primary">Test EmailJS Connection</button>
+                            <button id="sendTestEmailBtn" class="btn btn-success">Send Test Email</button>
+                        </div>
+                        
+                        <div id="result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import EmailService from './js/email-service.js';
+
+        const emailService = new EmailService();
+        
+        // Display configuration
+        document.getElementById('config').innerHTML = `
+            <div class="alert alert-info">
+                <p><strong>Service ID:</strong> ${emailService.serviceId}</p>
+                <p><strong>Template ID:</strong> ${emailService.templateId}</p>
+                <p><strong>Public Key:</strong> ${emailService.publicKey}</p>
+                <p><strong>EmailJS Loaded:</strong> ${typeof emailjs !== 'undefined' ? 'Yes' : 'No'}</p>
+            </div>
+        `;
+        
+        document.getElementById('testEmailJSBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Testing EmailJS connection...</div>';
+            
+            try {
+                const result = await emailService.testEmailJS();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>✅ EmailJS Test Successful!</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>❌ EmailJS Test Failed</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Error Testing EmailJS</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        document.getElementById('sendTestEmailBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Sending test email...</div>';
+            
+            try {
+                const testEventData = {
+                    firstName: 'Test Event',
+                    supervisorMail: 'test@example.com',
+                    eventDate: '2024-01-01',
+                    id: 'test-123'
+                };
+                
+                const testStudentData = {
+                    student_name: 'Test Student',
+                    student_email: 'student@example.com'
+                };
+                
+                const result = await emailService.sendVolunteerApprovalEmail(testEventData, testStudentData, '2');
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>✅ Test Email Sent!</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>❌ Test Email Failed</h4>
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>❌ Error Sending Test Email</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html> 
