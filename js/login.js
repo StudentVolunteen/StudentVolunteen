@@ -53,6 +53,21 @@ login.addEventListener("click", function (event) {
   //window.location.href = 
   .then((userCredential) => {
     localStorage.setItem("storageName", email);
+    
+    // Check if this is the admin account
+    if (email === 'volunteen.company@gmail.com') {
+      localStorage.setItem('volunteen_logged_in', 'true');
+      localStorage.setItem('volunteen_current_user', email);
+      localStorage.setItem('volunteen_current_role', 'admin');
+      localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
+    } else {
+      // Regular user login
+      localStorage.setItem('volunteen_logged_in', 'true');
+      localStorage.setItem('volunteen_current_user', email);
+      localStorage.setItem('volunteen_current_role', 'student');
+      localStorage.setItem('volunteen_current_permissions', JSON.stringify(['student']));
+    }
+    
     window.location.href = "index.login.html";
     const user = userCredential.user;
 

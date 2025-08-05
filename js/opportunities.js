@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
@@ -102,6 +102,9 @@ function createEventCard(eventData, eventId) {
     const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
     const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
     
+    // Check if user is admin (volunteen.company@gmail.com)
+    const isAdmin = currentUserEmail === 'volunteen.company@gmail.com';
+    
     // Check if user is the creator of this event (for supervisors)
     const isEventCreator = eventData.email === currentUserEmail;
     
@@ -131,7 +134,15 @@ function createEventCard(eventData, eventId) {
                             <i class="fa fa-trash"></i>
                         </button>` : ''
                     }
-                    ${loggedIn && !hasSubAdminPermission && hasSignedUp ? 
+                    ${loggedIn && isAdmin ? 
+                        `<button class="btn btn-sm btn-outline-danger" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" style="display: none;" id="undo-${eventId}">
+                            <i class="fa fa-undo"></i>
+                        </button>` : ''
+                    }
+                    ${loggedIn && !hasSubAdminPermission && !isAdmin && hasSignedUp ? 
                         `<button class="btn btn-sm btn-outline-danger" onclick="cancelSignup('${eventData.title}')" title="Cancel Signup">
                             <i class="fa fa-trash"></i>
                         </button>` : ''
@@ -180,6 +191,78 @@ async function deleteEvent(eventId, eventTitle) {
             console.error("Error deleting event: ", error);
             alert("Failed to delete event: " + error.message);
         }
+    }
+}
+
+// Function to delete an event (for admin - with undo capability)
+async function adminDeleteEvent(eventId, eventTitle) {
+    if (confirm(`Are you sure you want to delete the event "${eventTitle}"? You can undo this action.`)) {
+        try {
+            // Store the event data before deletion for potential undo
+            const eventRef = doc(db, "Events", eventId);
+            const eventDoc = await getDoc(eventRef);
+            const eventData = eventDoc.data();
+            
+            // Store in localStorage for undo
+            const deletedEvents = JSON.parse(localStorage.getItem('deleted_events') || '[]');
+            deletedEvents.push({
+                id: eventId,
+                title: eventTitle,
+                data: eventData,
+                deletedAt: new Date().toISOString()
+            });
+            localStorage.setItem('deleted_events', JSON.stringify(deletedEvents));
+            
+            // Delete the event
+            await deleteDoc(eventRef);
+            alert("Event deleted successfully! You can undo this action.");
+            
+            // Show undo button
+            const undoBtn = document.getElementById(`undo-${eventId}`);
+            if (undoBtn) {
+                undoBtn.style.display = 'inline-block';
+            }
+            
+            loadEvents(); // Refresh the events list
+        } catch (error) {
+            console.error("Error deleting event: ", error);
+            alert("Failed to delete event: " + error.message);
+        }
+    }
+}
+
+// Function to undo delete (for admin)
+async function undoDeleteEvent(eventId, eventTitle) {
+    try {
+        // Get the deleted event data
+        const deletedEvents = JSON.parse(localStorage.getItem('deleted_events') || '[]');
+        const deletedEvent = deletedEvents.find(event => event.id === eventId);
+        
+        if (!deletedEvent) {
+            alert("No deleted event found to restore.");
+            return;
+        }
+        
+        // Restore the event
+        const eventRef = doc(db, "Events", eventId);
+        await setDoc(eventRef, deletedEvent.data);
+        
+        // Remove from deleted events list
+        const updatedDeletedEvents = deletedEvents.filter(event => event.id !== eventId);
+        localStorage.setItem('deleted_events', JSON.stringify(updatedDeletedEvents));
+        
+        alert("Event restored successfully!");
+        
+        // Hide undo button
+        const undoBtn = document.getElementById(`undo-${eventId}`);
+        if (undoBtn) {
+            undoBtn.style.display = 'none';
+        }
+        
+        loadEvents(); // Refresh the events list
+    } catch (error) {
+        console.error("Error restoring event: ", error);
+        alert("Failed to restore event: " + error.message);
     }
 }
 
@@ -344,6 +427,8 @@ function sortEventsByDistance(events) {
 window.loadEvents = loadEvents;
 window.editEvent = editEvent;
 window.deleteEvent = deleteEvent;
+window.adminDeleteEvent = adminDeleteEvent;
+window.undoDeleteEvent = undoDeleteEvent;
 window.cancelSignup = cancelSignup;
 window.cleanupAllEvents = cleanupAllEvents;
 window.sortByDate = sortByDate;
