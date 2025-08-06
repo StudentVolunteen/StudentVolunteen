@@ -32,9 +32,6 @@
                             <a class="nav-link" href="addopps.admin.html">Create Event</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="supervisor-inbox.html">Email Inbox</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="contact.html">Contact Us</a>
                         </li>
                     </ul>
@@ -94,7 +91,7 @@
 
         // Get parameters from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const supervisorEmail = urlParams.get('email');
+        const supervisorEmail = urlParams.get('supervisorEmail');
         const eventTitle = urlParams.get('event');
         const eventId = urlParams.get('eventId');
 
