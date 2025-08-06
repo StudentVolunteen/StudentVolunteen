@@ -211,6 +211,14 @@
             // Modal logic - make functions globally available
             let currentEvent = null;
             window.openModal = function(eventTitle, supervisorEmail, eventId) {
+              // Check if user is logged in
+              const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+              if (!loggedIn) {
+                alert('Please log in or create an account to sign up for events.');
+                window.location.href = 'login.html';
+                return;
+              }
+              
               currentEvent = { eventTitle, supervisorEmail, eventId };
               document.getElementById('hoursModal').style.display = 'block';
             };
