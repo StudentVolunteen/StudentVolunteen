@@ -123,11 +123,34 @@
       const role = localStorage.getItem('volunteen_current_role');
       document.getElementById('create-event-btn').style.display = (loggedIn && role === 'supervisor') ? '' : 'none';
     }
-    document.getElementById('logout-btn').onclick = function() {
-      localStorage.setItem('volunteen_logged_in', 'false');
-      updateAuthNav();
+    // Comprehensive logout function
+    function performLogout() {
+      // Clear all user-specific data
+      localStorage.removeItem('volunteen_logged_in');
+      localStorage.removeItem('volunteen_current_user');
+      localStorage.removeItem('volunteen_current_role');
+      localStorage.removeItem('volunteen_current_permissions');
+      localStorage.removeItem('volunteen_hours');
+      localStorage.removeItem('sent_emails');
+      localStorage.removeItem('deleted_events_backup');
+      localStorage.removeItem('editing_event_id');
+      localStorage.removeItem('editing_event_title');
+      
+      // Clear any other user-specific data
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('volunteen_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      // Redirect to home page
       window.location.href = 'index.html';
-    };
+    }
+    
+    document.getElementById('logout-btn').onclick = performLogout;
     // Call updateAuthNav when page loads
     document.addEventListener('DOMContentLoaded', function() {
       updateAuthNav();
