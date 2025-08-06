@@ -174,11 +174,33 @@
                 inboxLink.style.display = (loggedIn && hasSubAdminPermission) ? '' : 'none';
               }
             }
-            document.getElementById('logout-btn').onclick = function() {
-              localStorage.setItem('volunteen_logged_in', 'false');
-              updateAuthNav();
+            // Comprehensive logout function
+            function performLogout() {
+              // Clear session-related data only (preserve user progress)
+              localStorage.removeItem('volunteen_logged_in');
+              localStorage.removeItem('volunteen_current_user');
+              localStorage.removeItem('volunteen_current_role');
+              localStorage.removeItem('volunteen_current_permissions');
+              localStorage.removeItem('sent_emails');
+              localStorage.removeItem('deleted_events_backup');
+              localStorage.removeItem('editing_event_id');
+              localStorage.removeItem('editing_event_title');
+              
+              // Clear any other session-related data (but preserve volunteen_hours)
+              const keysToRemove = [];
+              for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('volunteen_') && key !== 'volunteen_hours') {
+                  keysToRemove.push(key);
+                }
+              }
+              keysToRemove.forEach(key => localStorage.removeItem(key));
+              
+              // Redirect to home page
               window.location.href = 'index.html';
-            };
+            }
+            
+            document.getElementById('logout-btn').onclick = performLogout;
             
             document.getElementById('create-event-btn').onclick = function() {
               window.location.href = 'addopps.admin.html';
@@ -211,6 +233,14 @@
             // Modal logic - make functions globally available
             let currentEvent = null;
             window.openModal = function(eventTitle, supervisorEmail, eventId) {
+              // Check if user is logged in
+              const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+              if (!loggedIn) {
+                alert('Please log in or create an account to sign up for events.');
+                window.location.href = 'login.html';
+                return;
+              }
+              
               currentEvent = { eventTitle, supervisorEmail, eventId };
               document.getElementById('hoursModal').style.display = 'block';
             };
