@@ -25,9 +25,82 @@
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
+
+  <style>
+  /* Fade-in + slide-up animation */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Zoom effect for images */
+  .img-box img {
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .img-box img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Smooth button hover */
+  .btn1, .btn-primary {
+    transition: all 0.3s ease;
+  }
+
+  .btn1:hover, .btn-primary:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* Carousel fade effect */
+  .carousel-item {
+    transition: opacity 1s ease-in-out;
+  }
+
+  /* Slide transitions for section headers */
+  .heading_container h2 {
+    position: relative;
+    animation: fadeSlideDown 1s ease forwards;
+  }
+
+  @keyframes fadeSlideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
   
 
 </head>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const elements = document.querySelectorAll('.animate-on-scroll');
+
+    function handleScroll() {
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // trigger once on load
+  });
+</script>
 
 <body class="sub_page">
 
@@ -169,7 +242,7 @@
     </section>
     <!-- end slider section -->
   </div>
-  <section class="layout_padding">
+  <section class="layout_padding animate-on-scroll">
     <div class="container">
       <div class="heading_container">
         <h2>Welcome to VolunTEEN</h2>
@@ -200,7 +273,7 @@
 
   <!-- end about section -->
 
-<section class="layout_padding bg-light">
+<section class="layout_padding bg-light animate-on-scroll">
   <div class="container">
     <div class="heading_container">
       <h2>How VolunTEEN Works</h2>
@@ -240,7 +313,7 @@
 
 
 
-<section class="layout_padding bg-light">
+<section class="layout_padding bg-light animate-on-scroll">
   <div class="container">
     <div class="heading_container">
       <h2>What People Are Saying</h2>
