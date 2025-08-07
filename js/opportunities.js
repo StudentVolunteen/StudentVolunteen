@@ -151,10 +151,10 @@ function createEventCard(eventData, eventId) {
                     }
                     ${loggedIn && isAdmin ? 
                         `<div class="admin-buttons">
-                            <button class="btn btn-sm btn-outline-danger admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
-                                <i class="fa fa-trash"></i> Admin Delete
+                            <button class="btn admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
+                                <i class="fa fa-trash"></i> Delete
                             </button>
-                            <button class="btn btn-sm btn-outline-success admin-undo-btn" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" id="undo-${eventId}">
+                            <button class="btn admin-undo-btn" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" id="undo-${eventId}">
                                 <i class="fa fa-undo"></i> Undo
                             </button>
                         </div>` : ''

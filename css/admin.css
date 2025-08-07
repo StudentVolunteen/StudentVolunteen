@@ -51,3 +51,45 @@
     background-color: transparent;
     color: transparent;
 }
+
+/* Admin buttons styling */
+.admin-buttons {
+    display: flex;
+    gap: 5px;
+    margin-left: 5px;
+}
+
+.admin-delete-btn,
+.admin-undo-btn {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 5px 10px !important;
+    font-size: 14px !important;
+}
+
+.admin-delete-btn i,
+.admin-undo-btn i {
+    margin-right: 5px;
+}
+
+.admin-undo-btn {
+    background-color: #28a745 !important;
+    color: white !important;
+    border-color: #28a745 !important;
+}
+
+.admin-undo-btn:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+}
+
+.admin-delete-btn {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+
+.admin-delete-btn:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
