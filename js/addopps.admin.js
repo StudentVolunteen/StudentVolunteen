@@ -63,8 +63,8 @@ create.addEventListener("click", async (e) => {
     const password = document.getElementById('password').value;
     const eventPin = document.getElementById('eventPin').value;
 
-    if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress || !password) {
-        alert("Please fill in all fields!");
+    if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress) {
+        alert("Please fill in all required fields!");
         return;
     }
 
