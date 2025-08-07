@@ -27,17 +27,32 @@ create.addEventListener("click", function (event) {
   //inputs
 const email = document.getElementById('email').value;
 const password = document.getElementById('password').value;
-
-  // Check if someone is trying to register as admin with wrong password
-  if (email.toLowerCase() === 'volunteen.company@gmail.com' && password !== 'Volunteen54321!') {
+if (email.toLowerCase() === 'volunteen.company@gmail.com' && password !== 'Volunteen54321!') {
     alert('Unauthorized attempt to create admin account.');
     return;
   }
+  const passwordAgain = document.getElementById('password-again').value;
+ if (password !== passwordAgain) {
+    alert('Passwords do not match.');
+    return;
+  }
 
-  createUserWithEmailAndPassword(auth, email, password)
+  if(password === passwordAgain){
+      createUserWithEmailAndPassword(auth, email, password)
   
   .then((userCredential) => {
+    alert("User Created Please Login");
     // Get the selected role
+    const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const role = document.getElementById('role').value;
+ 
+  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  // Supervisors automatically get sub-admin permissions
+  const permissions = role === 'supervisor' ? ['sub-admin'] : [];
+  users[email] = { password, role, permissions };
+  localStorage.setItem('volunteen_users', JSON.stringify(users));
     const roleSelect = document.querySelector('select[name="role"]');
     const selectedRole = roleSelect ? roleSelect.value : 'student';
     
@@ -53,6 +68,8 @@ const password = document.getElementById('password').value;
     const errorMessage = error.message;
     alert(errorMessage)
   })
+  }
+
 })
 
 

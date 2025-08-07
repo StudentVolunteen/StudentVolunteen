@@ -273,28 +273,28 @@ function updateAuthNav() {
 document.getElementById('logout-btn').onclick = performLogout;
 // Call updateAuthNav when page loads
 document.addEventListener('DOMContentLoaded', updateAuthNav);
-// Registration form logic
-const signupForm = document.getElementById('signup-form');
-const submitBtn = document.getElementById('submitButton');
-submitBtn.onclick = function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const passwordAgain = document.getElementById('password-again').value;
-  const role = document.getElementById('role').value;
-  if (password !== passwordAgain) {
-    alert('Passwords do not match.');
-    return;
-  }
-  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-  if (users[email]) {
-    alert('User already exists.');
-    return;
-  }
-  // Supervisors automatically get sub-admin permissions
-  const permissions = role === 'supervisor' ? ['sub-admin'] : [];
-  users[email] = { password, role, permissions };
-  localStorage.setItem('volunteen_users', JSON.stringify(users));
-  alert('Registration successful! Please log in.');
-  window.location.href = 'login.html';
-};
+// // Registration form logic
+// const signupForm = document.getElementById('signup-form');
+// const submitBtn = document.getElementById('submitButton');
+// submitBtn.onclick = function() {
+//   const email = document.getElementById('email').value;
+//   const password = document.getElementById('password').value;
+//   const passwordAgain = document.getElementById('password-again').value;
+//   const role = document.getElementById('role').value;
+//   if (password !== passwordAgain) {
+//     alert('Passwords do not match.');
+//     return;
+//   }
+//   let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+//   if (users[email]) {
+//     alert('User already exists.');
+//     return;
+//   }
+//   // Supervisors automatically get sub-admin permissions
+//   const permissions = role === 'supervisor' ? ['sub-admin'] : [];
+//   users[email] = { password, role, permissions };
+//   localStorage.setItem('volunteen_users', JSON.stringify(users));
+//   alert('Registration successful! Please log in.');
+//   window.location.href = 'login.html';
+// };
 </script>
