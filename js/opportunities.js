@@ -150,14 +150,9 @@ function createEventCard(eventData, eventId) {
                         </button>` : ''
                     }
                     ${loggedIn && isAdmin ? 
-                        `<div class="admin-buttons">
-                            <button class="btn admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
-                                <i class="fa fa-trash"></i> Delete
-                            </button>
-                            <button class="btn admin-undo-btn" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" id="undo-${eventId}">
-                                <i class="fa fa-undo"></i> Undo
-                            </button>
-                        </div>` : ''
+                        `<button class="btn admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
+                            <i class="fa fa-trash"></i> Delete
+                        </button>` : ''
                     }
                     ${loggedIn && !hasSubAdminPermission && !isAdmin && hasSignedUp ? 
                         `<button class="btn btn-sm btn-outline-danger" onclick="cancelSignup('${eventData.title}')" title="Cancel Signup">
@@ -240,7 +235,10 @@ async function adminDeleteEvent(eventId, eventTitle) {
             
             // Delete the event
             await deleteDoc(eventRef);
-            alert("Event deleted successfully! Click the 'Undo' button next to the delete button to restore this event.");
+            alert("Event deleted successfully! Click the 'Undo Last Delete' button at the top to restore this event.");
+            
+            // Update the undo button visibility
+            updateUndoButtonVisibility();
             
             loadEvents(); // Refresh the events list
         } catch (error) {
@@ -250,38 +248,45 @@ async function adminDeleteEvent(eventId, eventTitle) {
     }
 }
 
-// Function to undo delete (for admin)
-async function undoDeleteEvent(eventId, eventTitle) {
+// Function to undo last delete (for admin)
+async function undoLastDelete() {
     try {
-        // Get the deleted event data
+        // Get the deleted events data
         const deletedEvents = JSON.parse(localStorage.getItem('deleted_events') || '[]');
-        const deletedEvent = deletedEvents.find(event => event.id === eventId);
         
-        if (!deletedEvent) {
-            alert("No deleted event found to restore.");
+        if (deletedEvents.length === 0) {
+            alert("No deleted events to restore.");
             return;
         }
         
+        // Get the most recently deleted event
+        const lastDeletedEvent = deletedEvents[deletedEvents.length - 1];
+        
         // Restore the event
-        const eventRef = doc(db, "Events", eventId);
-        await setDoc(eventRef, deletedEvent.data);
+        const eventRef = doc(db, "Events", lastDeletedEvent.id);
+        await setDoc(eventRef, lastDeletedEvent.data);
         
         // Remove from deleted events list
-        const updatedDeletedEvents = deletedEvents.filter(event => event.id !== eventId);
-        localStorage.setItem('deleted_events', JSON.stringify(updatedDeletedEvents));
+        deletedEvents.pop(); // Remove the last event
+        localStorage.setItem('deleted_events', JSON.stringify(deletedEvents));
         
         alert("Event restored successfully!");
-        
-        // Hide undo button
-        const undoBtn = document.getElementById(`undo-${eventId}`);
-        if (undoBtn) {
-            undoBtn.style.display = 'none';
-        }
-        
         loadEvents(); // Refresh the events list
+        
+        // Update the undo button visibility
+        updateUndoButtonVisibility();
     } catch (error) {
         console.error("Error restoring event: ", error);
         alert("Failed to restore event: " + error.message);
+    }
+}
+
+// Function to update undo button visibility
+function updateUndoButtonVisibility() {
+    const deletedEvents = JSON.parse(localStorage.getItem('deleted_events') || '[]');
+    const undoBtn = document.getElementById('admin-undo-btn');
+    if (undoBtn) {
+        undoBtn.style.display = deletedEvents.length > 0 ? 'inline-block' : 'none';
     }
 }
 
