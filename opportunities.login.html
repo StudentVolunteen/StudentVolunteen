@@ -110,15 +110,14 @@
                             <button class="btn btn-primary" type="button" id="sortDropdown" onclick="toggleSortDropdown()">
                                 Sort Events ▼
                             </button>
-                        </div>
-                        <button id="admin-undo-btn" class="btn btn-success" style="display:none;" onclick="undoLastDelete()">
-                            <i class="fa fa-undo"></i> Undo Last Delete
-                        </button>
                             <div class="dropdown-menu" id="sortDropdownMenu" style="display: none; position: absolute; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; min-width: 150px;">
                                 <a class="dropdown-item" href="#" onclick="sortByDate(); hideSortDropdown();" style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Sort by Date</a>
                                 <a class="dropdown-item" href="#" onclick="sortByLocation(); hideSortDropdown();" style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Sort by Location</a>
                             </div>
                         </div>
+                        <button id="admin-undo-btn" class="btn btn-success" style="display:none;" onclick="undoLastDelete()">
+                            <i class="fa fa-undo"></i> Undo Last Delete
+                        </button>
                     </div>
                 </div>
                 <div class="row" id="opportunities-list">
