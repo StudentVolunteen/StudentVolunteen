@@ -74,7 +74,7 @@ login.addEventListener("click", function (event) {
       console.log('User logged in:', email, 'with role:', storedRole);
     }
     
-    window.location.href = "index.login.html";
+    window.location.href = "index.html";
     const user = userCredential.user;
 
   })
