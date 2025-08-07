@@ -166,22 +166,23 @@ document.addEventListener('DOMContentLoaded', updateAuthNav);
 // Login form logic
 const loginForm = document.getElementById('login-form');
 const submitBtn = document.getElementById('submitButton');
-submitBtn.onclick = function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-  if (users[email] && users[email].password === password) {
-    localStorage.setItem('volunteen_logged_in', 'true');
-    localStorage.setItem('volunteen_current_user', email);
-    localStorage.setItem('volunteen_current_role', users[email].role || 'student');
-    localStorage.setItem('volunteen_current_permissions', JSON.stringify(users[email].permissions || []));
-    if (users[email].role === 'supervisor') {
-      window.location.href = 'addopps.admin.html';
-    } else {
-      window.location.href = 'index.html';
-    }
-  } else {
-    alert('Invalid email or password.');
-  }
-};
+//submitBtn.onclick = function() {
+//const email = document.getElementById('email').value;
+//  const password = document.getElementById('password').value;
+  //const users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  //alert(users);
+//   if (users[email] && users[email].password === password) {
+//     localStorage.setItem('volunteen_logged_in', 'true');
+//     localStorage.setItem('volunteen_current_user', email);
+//     localStorage.setItem('volunteen_current_role', users[email].role || 'student');
+//     localStorage.setItem('volunteen_current_permissions', JSON.stringify(users[email].permissions || []));
+//     if (users[email].role === 'supervisor') {
+//       window.location.href = 'addopps.admin.html';
+//     } else {
+//       window.location.href = 'index.html';
+//     }
+//   } else {
+//     alert('Invalid email or password.');
+//   }
+// };
 </script>
