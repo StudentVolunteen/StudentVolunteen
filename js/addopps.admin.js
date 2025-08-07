@@ -38,6 +38,7 @@ if (isEditMode && editingEventId) {
             document.getElementById('volunteerCount').value = eventData.volunteerCount || '';
             document.getElementById('eventAddress').value = eventData.eventAddress || '';
             document.getElementById('password').value = eventData.password || '';
+            document.getElementById('eventPin').value = eventData.eventPin || '';
             
             // Change button text and title
             document.getElementById('submitButton').textContent = 'Update Event';
@@ -60,9 +61,10 @@ create.addEventListener("click", async (e) => {
     const volunteerCount = document.getElementById('volunteerCount').value;
     const eventAddress = document.getElementById('eventAddress').value;
     const password = document.getElementById('password').value;
+    const eventPin = document.getElementById('eventPin').value;
 
-    if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress || !password) {
-        alert("Please fill in all fields!");
+    if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress) {
+        alert("Please fill in all required fields!");
         return;
     }
 
@@ -78,6 +80,7 @@ create.addEventListener("click", async (e) => {
                     volunteerCount: parseInt(volunteerCount),
                     eventAddress,
                     password,
+                    eventPin,
                     updatedAt: new Date().toISOString()
                 });
                 alert("Event updated successfully!");
@@ -95,6 +98,7 @@ create.addEventListener("click", async (e) => {
                     eventAddress,
                     currentVolunteers: 0,
                     password,
+                    eventPin,
                     createdAt: new Date().toISOString()
                 });
                 alert("Event created successfully!");

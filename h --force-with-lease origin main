@@ -1,0 +1,5 @@
+[33m68755b1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Revert logout function to preserve volunteen_hours for email functionality
+[33m510f50d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix logout to preserve user progress - keep volunteen_hours data
+[33m0b0dce6[m Fix logout to clear all user data and reset pages properly
+[33me84a666[m Add authentication check for event signup and make grade optional for supervisors
+[33m20d1cd3[m Remove email inbox tab and fix event approval page URL parameters
