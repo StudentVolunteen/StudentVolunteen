@@ -74,14 +74,14 @@ login.addEventListener("click", function (event) {
       console.log('User logged in:', email, 'with role:', storedRole);
     }
     
-    window.location.href = "index.html";
+    window.location.href = "index.login.html";
     const user = userCredential.user;
 
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
-    alert("Invalid Login");
+    alert(errorMessage)
   })
 })
 

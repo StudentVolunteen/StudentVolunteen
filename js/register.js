@@ -27,7 +27,11 @@ create.addEventListener("click", function (event) {
   //inputs
 const email = document.getElementById('email').value;
 const password = document.getElementById('password').value;
-const passwordAgain = document.getElementById('password-again').value;
+if (email.toLowerCase() === 'volunteen.company@gmail.com' && password !== 'Volunteen54321!') {
+    alert('Unauthorized attempt to create admin account.');
+    return;
+  }
+  const passwordAgain = document.getElementById('password-again').value;
  if (password !== passwordAgain) {
     alert('Passwords do not match.');
     return;
