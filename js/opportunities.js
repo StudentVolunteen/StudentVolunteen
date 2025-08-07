@@ -103,7 +103,7 @@ function createEventCard(eventData, eventId) {
     const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
     
     // Check if user is admin (volunteen.company@gmail.com)
-    const isAdmin = currentUserEmail === 'volunteen.company@gmail.com';
+    const isAdmin = currentUserEmail.toLowerCase() === 'volunteen.company@gmail.com';
     
     // Debug logging
     console.log('User permissions check:', {
