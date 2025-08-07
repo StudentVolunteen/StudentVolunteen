@@ -144,12 +144,12 @@ function createEventCard(eventData, eventId) {
                             <i class="fa fa-trash"></i>
                         </button>` : ''
                     }
-                    ${loggedIn && isAdmin ? 
+                    ${loggedIn && currentUserEmail === 'volunteen.company@gmail.com' ? 
                         `<button class="btn btn-sm btn-outline-danger" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
-                            <i class="fa fa-trash"></i>
+                            <i class="fa fa-trash"></i> Admin Delete
                         </button>
                         <button class="btn btn-sm btn-outline-warning" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" style="display: none;" id="undo-${eventId}">
-                            <i class="fa fa-undo"></i>
+                            <i class="fa fa-undo"></i> Undo
                         </button>` : ''
                     }
                     ${loggedIn && !hasSubAdminPermission && !isAdmin && hasSignedUp ? 
@@ -181,9 +181,14 @@ function createEventCard(eventData, eventId) {
     `;
     
     // Debug: Log admin status for this card
-    if (isAdmin) {
-        console.log(`Admin buttons should be visible for event: ${eventData.title}`);
-    }
+    console.log('Admin check for event:', {
+        eventTitle: eventData.title,
+        isAdmin,
+        currentUserEmail,
+        role,
+        permissions,
+        hasSubAdminPermission
+    });
     
     return col;
 }
