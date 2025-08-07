@@ -27,6 +27,13 @@ create.addEventListener("click", function (event) {
   //inputs
 const email = document.getElementById('email').value;
 const password = document.getElementById('password').value;
+
+  // Check if someone is trying to register as admin with wrong password
+  if (email.toLowerCase() === 'volunteen.company@gmail.com' && password !== 'Volunteen54321!') {
+    alert('Unauthorized attempt to create admin account.');
+    return;
+  }
+
   createUserWithEmailAndPassword(auth, email, password)
   
   .then((userCredential) => {
