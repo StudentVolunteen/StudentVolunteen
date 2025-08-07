@@ -150,12 +150,14 @@ function createEventCard(eventData, eventId) {
                         </button>` : ''
                     }
                     ${loggedIn && isAdmin ? 
-                        `<button class="btn btn-sm btn-outline-danger admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
-                            <i class="fa fa-trash"></i> Admin Delete
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning admin-undo-btn" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" style="display: none;" id="undo-${eventId}">
-                            <i class="fa fa-undo"></i> Undo
-                        </button>` : ''
+                        `<div class="admin-buttons">
+                            <button class="btn btn-sm btn-outline-danger admin-delete-btn" onclick="adminDeleteEvent('${eventId}', '${eventData.title}')" title="Admin Delete Event">
+                                <i class="fa fa-trash"></i> Admin Delete
+                            </button>
+                            <button class="btn btn-sm btn-outline-success admin-undo-btn" onclick="undoDeleteEvent('${eventId}', '${eventData.title}')" title="Undo Delete" id="undo-${eventId}">
+                                <i class="fa fa-undo"></i> Undo
+                            </button>
+                        </div>` : ''
                     }
                     ${loggedIn && !hasSubAdminPermission && !isAdmin && hasSignedUp ? 
                         `<button class="btn btn-sm btn-outline-danger" onclick="cancelSignup('${eventData.title}')" title="Cancel Signup">
@@ -238,13 +240,7 @@ async function adminDeleteEvent(eventId, eventTitle) {
             
             // Delete the event
             await deleteDoc(eventRef);
-            alert("Event deleted successfully! You can undo this action.");
-            
-            // Show undo button
-            const undoBtn = document.getElementById(`undo-${eventId}`);
-            if (undoBtn) {
-                undoBtn.style.display = 'inline-block';
-            }
+            alert("Event deleted successfully! Click the 'Undo' button next to the delete button to restore this event.");
             
             loadEvents(); // Refresh the events list
         } catch (error) {
