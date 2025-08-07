@@ -169,7 +169,10 @@ function createEventCard(eventData, eventId) {
                 ${!hasSignedUp ? 
                     (isEventFull ? 
                         `<button class="btn btn-secondary w-100" disabled>Event Full</button>` :
-                        `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>`
+                        (eventData.eventPin ? 
+                            `<button class="btn btn-primary w-100" onclick="checkPinAndSignup('${eventData.title}', '${eventData.email}', '${eventId}', '${eventData.eventPin}')">Sign Up (PIN Required)</button>` :
+                            `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>`
+                        )
                     ) :
                     `<button class="btn btn-success w-100" disabled>Already Signed Up</button>`
                 }
@@ -438,6 +441,23 @@ function sortEventsByDistance(events) {
     displayEvents(sortedEvents);
 }
 
+// Function to check PIN and signup for events
+function checkPinAndSignup(eventTitle, supervisorEmail, eventId, correctPin) {
+    const userPin = prompt(`This event requires a PIN to sign up. Please enter the 4-digit PIN for "${eventTitle}":`);
+    
+    if (userPin === null) {
+        // User cancelled
+        return;
+    }
+    
+    if (userPin === correctPin) {
+        // PIN is correct, proceed with signup
+        openModal(eventTitle, supervisorEmail, eventId);
+    } else {
+        alert('Incorrect PIN. Please try again or contact the event supervisor for the correct PIN.');
+    }
+}
+
 // Make functions available globally
 window.loadEvents = loadEvents;
 window.editEvent = editEvent;
@@ -448,6 +468,7 @@ window.cancelSignup = cancelSignup;
 window.cleanupAllEvents = cleanupAllEvents;
 window.sortByDate = sortByDate;
 window.sortByLocation = sortByLocation;
+window.checkPinAndSignup = checkPinAndSignup;
 
 // Load events when the page loads
 document.addEventListener('DOMContentLoaded', function() {
