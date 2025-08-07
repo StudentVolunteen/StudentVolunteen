@@ -27,10 +27,28 @@ create.addEventListener("click", function (event) {
   //inputs
 const email = document.getElementById('email').value;
 const password = document.getElementById('password').value;
-  createUserWithEmailAndPassword(auth, email, password)
+const passwordAgain = document.getElementById('password-again').value;
+ if (password !== passwordAgain) {
+    alert('Passwords do not match.');
+    return;
+  }
+
+  if(password === passwordAgain){
+      createUserWithEmailAndPassword(auth, email, password)
   
   .then((userCredential) => {
+    alert("User Created Please Login");
     // Get the selected role
+    const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const role = document.getElementById('role').value;
+ 
+  let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+  // Supervisors automatically get sub-admin permissions
+  const permissions = role === 'supervisor' ? ['sub-admin'] : [];
+  users[email] = { password, role, permissions };
+  localStorage.setItem('volunteen_users', JSON.stringify(users));
     const roleSelect = document.querySelector('select[name="role"]');
     const selectedRole = roleSelect ? roleSelect.value : 'student';
     
@@ -46,6 +64,8 @@ const password = document.getElementById('password').value;
     const errorMessage = error.message;
     alert(errorMessage)
   })
+  }
+
 })
 
 
