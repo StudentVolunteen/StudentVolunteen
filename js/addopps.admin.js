@@ -63,8 +63,28 @@ create.addEventListener("click", async (e) => {
     const password = document.getElementById('password').value;
     const eventPin = document.getElementById('eventPin').value;
 
+    // Debug: Log the values to see what's missing
+    console.log('Form values:', {
+        title: title,
+        description: description,
+        email: email,
+        eventDate: eventDate,
+        volunteerCount: volunteerCount,
+        eventAddress: eventAddress,
+        password: password,
+        eventPin: eventPin
+    });
+    
     if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress) {
         alert("Please fill in all required fields!");
+        console.log('Missing fields:', {
+            title: !title,
+            description: !description,
+            email: !email,
+            eventDate: !eventDate,
+            volunteerCount: !volunteerCount,
+            eventAddress: !eventAddress
+        });
         return;
     }
 

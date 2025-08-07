@@ -30,6 +30,14 @@ const password = document.getElementById('password').value;
   createUserWithEmailAndPassword(auth, email, password)
   
   .then((userCredential) => {
+    // Get the selected role
+    const roleSelect = document.querySelector('select[name="role"]');
+    const selectedRole = roleSelect ? roleSelect.value : 'student';
+    
+    // Store the role in localStorage
+    localStorage.setItem('volunteen_user_' + userCredential.user.uid + '_role', selectedRole);
+    
+    // Redirect to login
     window.location.href = "login.html";
     const user = userCredential.user;
   })
