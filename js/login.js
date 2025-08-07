@@ -55,16 +55,12 @@ login.addEventListener("click", function (event) {
     localStorage.setItem("storageName", email);
     
     // Check if this is the admin account
-    if (email.toLowerCase() === 'volunteen.company@gmail.com') {
+    if (email === 'volunteen.company@gmail.com') {
       localStorage.setItem('volunteen_logged_in', 'true');
-      localStorage.setItem('volunteen_current_user', 'volunteen.company@gmail.com');
+      localStorage.setItem('volunteen_current_user', email);
       localStorage.setItem('volunteen_current_role', 'admin');
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
-      console.log('Admin account logged in with permissions:', {
-        email: email,
-        role: 'admin',
-        permissions: ['admin']
-      });
+      console.log('Admin account logged in:', email);
     } else {
       // Get the stored role for this user
       const storedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role') || 'student';
