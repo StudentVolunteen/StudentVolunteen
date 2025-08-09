@@ -65,27 +65,6 @@
             }
         }
 
-        // Function to find and update UID-based role storage
-        function updateUIDBasedRole(email, newRole) {
-            // Find all UID-based role keys and update the one that matches this email
-            const keysToUpdate = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('volunteen_user_') && key.endsWith('_role')) {
-                    // Check if this key is associated with the current email
-                    // We'll update all UID-based keys to be safe
-                    keysToUpdate.push(key);
-                }
-            }
-            
-            // Update all UID-based role keys
-            keysToUpdate.forEach(key => {
-                localStorage.setItem(key, newRole);
-            });
-            
-            console.log('Updated UID-based role keys:', keysToUpdate);
-        }
-
         document.getElementById('fixPermissionsBtn').addEventListener('click', () => {
             const resultDiv = document.getElementById('result');
             const userEmail = document.getElementById('userEmail').value.trim();
@@ -101,39 +80,43 @@
             }
             
             try {
-                // Set supervisor permissions for current session
+                // SIMPLE, BULLETPROOF FIX
+                // Set supervisor role in ALL possible storage locations
+                
+                // 1. Current session
                 localStorage.setItem('volunteen_logged_in', 'true');
                 localStorage.setItem('volunteen_current_user', userEmail);
                 localStorage.setItem('volunteen_current_role', 'supervisor');
                 localStorage.setItem('volunteen_current_permissions', JSON.stringify(['sub-admin', 'supervisor']));
                 
-                // Store the role permanently using email as key (for existing users)
+                // 2. Email-based storage
                 localStorage.setItem('volunteen_user_role_' + userEmail, 'supervisor');
                 
-                // Also store in the users object for compatibility
+                // 3. Users object
                 let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-                if (users[userEmail]) {
-                    users[userEmail].role = 'supervisor';
-                    users[userEmail].permissions = ['sub-admin', 'supervisor'];
-                } else {
-                    users[userEmail] = { role: 'supervisor', permissions: ['sub-admin', 'supervisor'] };
-                }
+                users[userEmail] = { role: 'supervisor', permissions: ['sub-admin', 'supervisor'] };
                 localStorage.setItem('volunteen_users', JSON.stringify(users));
                 
-                // Update any existing UID-based role storage
-                updateUIDBasedRole(userEmail, 'supervisor');
+                // 4. Update ALL UID-based keys (for any existing UIDs)
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('volunteen_user_') && key.endsWith('_role')) {
+                        localStorage.setItem(key, 'supervisor');
+                    }
+                }
                 
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h3>✅ Supervisor Permissions Fixed Permanently!</h3>
-                        <p>Your account (${userEmail}) now has supervisor permissions that will persist across sessions.</p>
+                        <h3>✅ SUPERVISOR PERMISSIONS FIXED PERMANENTLY!</h3>
+                        <p><strong>Your account (${userEmail}) is now a supervisor FOREVER!</strong></p>
                         <ul>
                             <li>✅ See the "Create Event" button</li>
                             <li>✅ Edit events</li>
                             <li>✅ Delete events</li>
                             <li>✅ Permissions will stay after logout/login</li>
+                            <li>✅ Set in ALL storage locations</li>
                         </ul>
-                        <p><strong>Next time you log in, you'll automatically be recognized as a supervisor!</strong></p>
+                        <p><strong>🔒 This is PERMANENT - you will ALWAYS be a supervisor now!</strong></p>
                         <p>Click "Go to Opportunities" to test it out!</p>
                     </div>
                 `;
@@ -141,7 +124,8 @@
                 // Update the status display
                 updateStatus();
                 
-                console.log('Supervisor permissions set permanently for email:', userEmail);
+                console.log('SUPERVISOR PERMISSIONS SET PERMANENTLY for:', userEmail);
+                console.log('All storage locations updated with supervisor role');
             } catch (error) {
                 resultDiv.innerHTML = `
                     <div class="alert alert-danger">

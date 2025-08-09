@@ -62,20 +62,34 @@ login.addEventListener("click", function (event) {
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
       console.log('Admin account logged in:', email);
     } else {
-      // Get the stored role for this user (check email-based storage first, then UID as fallback)
-      let storedRole = localStorage.getItem('volunteen_user_role_' + email);
-      if (!storedRole) {
-        // Fallback: check if role is stored by UID
-        storedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role') || 'student';
+      // SIMPLE, RELIABLE ROLE CHECK
+      // Check if user is marked as supervisor in any storage location
+      const emailBasedRole = localStorage.getItem('volunteen_user_role_' + email);
+      const uidBasedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role');
+      const usersObject = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
+      const userInUsers = usersObject[email];
+      
+      // Determine role - if ANY storage says supervisor, they're a supervisor
+      let finalRole = 'student';
+      if (emailBasedRole === 'supervisor' || uidBasedRole === 'supervisor' || 
+          (userInUsers && userInUsers.role === 'supervisor')) {
+        finalRole = 'supervisor';
       }
-      const permissions = storedRole === 'supervisor' ? ['sub-admin', 'supervisor'] : ['student'];
+      
+      const permissions = finalRole === 'supervisor' ? ['sub-admin', 'supervisor'] : ['student'];
       
       // Set login state
       localStorage.setItem('volunteen_logged_in', 'true');
       localStorage.setItem('volunteen_current_user', email);
-      localStorage.setItem('volunteen_current_role', storedRole);
+      localStorage.setItem('volunteen_current_role', finalRole);
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(permissions));
-      console.log('User logged in:', email, 'with role:', storedRole, 'UID:', userCredential.user.uid);
+      
+      // Also update all storage locations to be consistent
+      localStorage.setItem('volunteen_user_role_' + email, finalRole);
+      localStorage.setItem('volunteen_user_' + userCredential.user.uid + '_role', finalRole);
+      
+      console.log('User logged in:', email, 'with role:', finalRole, 'UID:', userCredential.user.uid);
+      console.log('Role sources:', { emailBasedRole, uidBasedRole, userInUsers: userInUsers?.role });
     }
     
     // Redirect based on user role
@@ -151,40 +165,9 @@ logout.addEventListener('click', (event) => {
         var user = auth.currentUser
         alert("Logged In!")
         //window.location.href = 'index.html';
-      })
-      .catch(function(error) {
-        var error_message = error.message
-        alert(error_message)
-      })
-  }
-  
-  function validate_pass(password){
-    return(password >= 6)
-  }
-*/
-// import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-// import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-
-// // Initialize Firebase (assuming this is already done in your app)
-// const database = getDatabase();
-// const auth = getAuth();
-
-// // Event listener for the submit button
-// document.getElementById('submitButton').addEventListener('click', function() {
-//   const user = auth.currentUser; // Get the currently logged-in user
-//   const hoursLogged = document.getElementById('hoursLogged1').value; // Adjust based on your input field
-
-//   if (user) {
-//     const hoursRef = ref(database, 'users/' + user.uid + '/hours'); // Reference to the user's hours
-//     set(hoursRef, {
-//       activity1: hoursLogged // Save logged hours
-//     }).then(() => {
-//       console.log('Hours logged successfully!');
-//       document.getElementById('hoursLogged1').value = ''; // Clear input field
-//     }).catch((error) => {
-//       console.error('Error logging hours: ', error);
-//     });
-//   } else {
-//     console.log('User is not logged in');
-//   }
-// });
+      }
+    ).catch(function(error) {
+      var error_message = error.message
+      alert(error_message)
+    })
+  }*/
