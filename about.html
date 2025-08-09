@@ -266,7 +266,11 @@
   });
   
 document.getElementById('logout-btn').onclick = function() {
-  localStorage.setItem('volunteen_logged_in', 'false');
+  // Clear session data but preserve role storage
+  localStorage.removeItem('volunteen_logged_in');
+  localStorage.removeItem('volunteen_current_user');
+  localStorage.removeItem('volunteen_current_role');
+  localStorage.removeItem('volunteen_current_permissions');
   updateAuthNav();
   window.location.href = 'index.html';
 };
