@@ -121,15 +121,20 @@ function createEventCard(eventData, eventId) {
     });
     
     // Check if user is the creator of this event (for supervisors)
-    const isEventCreator = eventData.email === currentUserEmail;
+    const eventEmail = (eventData.email || '').trim().toLowerCase();
+    const userEmail = (currentUserEmail || '').trim().toLowerCase();
+    const isEventCreator = eventEmail === userEmail;
     
     // Debug logging for event creator check
     console.log('Event creator check:', {
         eventTitle: eventData.title,
-        eventEmail: eventData.email,
-        currentUserEmail: currentUserEmail,
+        originalEventEmail: eventData.email,
+        originalCurrentEmail: currentUserEmail,
+        cleanedEventEmail: eventEmail,
+        cleanedUserEmail: userEmail,
         isEventCreator: isEventCreator,
-        emailMatch: eventData.email === currentUserEmail
+        exactMatch: eventData.email === currentUserEmail,
+        cleanedMatch: eventEmail === userEmail
     });
     
     // Check if user has signed up for this event (for students)
