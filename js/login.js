@@ -64,14 +64,14 @@ login.addEventListener("click", function (event) {
     } else {
       // Get the stored role for this user
       const storedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role') || 'student';
-      const permissions = storedRole === 'supervisor' ? ['sub-admin'] : ['student'];
+      const permissions = storedRole === 'supervisor' ? ['sub-admin', 'supervisor'] : ['student'];
       
       // Set login state
       localStorage.setItem('volunteen_logged_in', 'true');
       localStorage.setItem('volunteen_current_user', email);
       localStorage.setItem('volunteen_current_role', storedRole);
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(permissions));
-      console.log('User logged in:', email, 'with role:', storedRole);
+      console.log('User logged in:', email, 'with role:', storedRole, 'UID:', userCredential.user.uid);
     }
     
     // Redirect based on user role

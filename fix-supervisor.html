@@ -21,7 +21,7 @@
     <div class="container">
         <div class="card">
             <h2>Fix Supervisor Account Permissions</h2>
-            <p>This will fix your supervisor account permissions so you can create and edit events.</p>
+            <p>This will permanently fix your supervisor account permissions so you can create and edit events.</p>
             
             <div class="current-status">
                 <h3>Current Account Status:</h3>
@@ -29,9 +29,10 @@
                 <p><strong>Email:</strong> <span id="currentEmail">Loading...</span></p>
                 <p><strong>Role:</strong> <span id="currentRole">Loading...</span></p>
                 <p><strong>Permissions:</strong> <span id="currentPermissions">Loading...</span></p>
+                <p><strong>Firebase UID:</strong> <span id="firebaseUid">Loading...</span></p>
             </div>
             
-            <button id="fixPermissionsBtn" class="btn btn-primary">Fix My Supervisor Permissions</button>
+            <button id="fixPermissionsBtn" class="btn btn-primary">Permanently Fix My Supervisor Permissions</button>
             <button id="goToOpportunitiesBtn" class="btn btn-success">Go to Opportunities</button>
             
             <div id="result"></div>
@@ -39,37 +40,78 @@
     </div>
 
     <script>
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+            authDomain: "volunteen-438f6.firebaseapp.com",
+            projectId: "volunteen-438f6",
+            storageBucket: "volunteen-438f6.appspot.com",
+            messagingSenderId: "651971950022",
+            appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        let currentUser = null;
+
+        // Wait for Firebase auth to initialize
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            updateStatus();
+        });
+
         // Display current status
         function updateStatus() {
             const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
             const currentEmail = localStorage.getItem('volunteen_current_user') || 'Not logged in';
             const role = localStorage.getItem('volunteen_current_role') || 'None';
             const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+            const firebaseUid = currentUser ? currentUser.uid : 'Not available';
             
             document.getElementById('loginStatus').textContent = loggedIn ? 'Yes' : 'No';
             document.getElementById('currentEmail').textContent = currentEmail;
             document.getElementById('currentRole').textContent = role;
             document.getElementById('currentPermissions').textContent = permissions.join(', ') || 'None';
+            document.getElementById('firebaseUid').textContent = firebaseUid;
         }
 
         document.getElementById('fixPermissionsBtn').addEventListener('click', () => {
             const resultDiv = document.getElementById('result');
             
+            if (!currentUser) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h3>❌ Not Logged In</h3>
+                        <p>Please log in first before fixing permissions.</p>
+                    </div>
+                `;
+                return;
+            }
+            
             try {
-                // Set supervisor permissions
+                // Set supervisor permissions for current session
                 localStorage.setItem('volunteen_logged_in', 'true');
                 localStorage.setItem('volunteen_current_role', 'supervisor');
                 localStorage.setItem('volunteen_current_permissions', JSON.stringify(['sub-admin', 'supervisor']));
                 
+                // PERMANENTLY store the role with Firebase UID (this persists across sessions)
+                localStorage.setItem('volunteen_user_' + currentUser.uid + '_role', 'supervisor');
+                
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h3>✅ Supervisor Permissions Fixed!</h3>
-                        <p>Your account now has supervisor permissions. You should be able to:</p>
+                        <h3>✅ Supervisor Permissions Fixed Permanently!</h3>
+                        <p>Your account now has supervisor permissions that will persist across sessions.</p>
                         <ul>
-                            <li>See the "Create Event" button</li>
-                            <li>Edit events</li>
-                            <li>Delete events</li>
+                            <li>✅ See the "Create Event" button</li>
+                            <li>✅ Edit events</li>
+                            <li>✅ Delete events</li>
+                            <li>✅ Permissions will stay after logout/login</li>
                         </ul>
+                        <p><strong>Next time you log in, you'll automatically be recognized as a supervisor!</strong></p>
                         <p>Click "Go to Opportunities" to test it out!</p>
                     </div>
                 `;
@@ -77,7 +119,7 @@
                 // Update the status display
                 updateStatus();
                 
-                console.log('Supervisor permissions set successfully');
+                console.log('Supervisor permissions set permanently for UID:', currentUser.uid);
             } catch (error) {
                 resultDiv.innerHTML = `
                     <div class="alert alert-danger">
