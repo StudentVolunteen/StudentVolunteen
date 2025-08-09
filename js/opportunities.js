@@ -100,7 +100,7 @@ function createEventCard(eventData, eventId) {
     const currentUserEmail = localStorage.getItem('volunteen_current_user') || '';
     const role = localStorage.getItem('volunteen_current_role');
     const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
-    const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+    const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor' || permissions.includes('supervisor');
     
     // Check if user is admin (volunteen.company@gmail.com)
     const isAdmin = currentUserEmail.toLowerCase() === 'volunteen.company@gmail.com';
@@ -113,6 +113,11 @@ function createEventCard(eventData, eventId) {
         permissions,
         hasSubAdminPermission,
         isAdmin,
+        permissionBreakdown: {
+            hasSubAdmin: permissions.includes('sub-admin'),
+            isSupervisorRole: role === 'supervisor',
+            hasSupervisorPermission: permissions.includes('supervisor')
+        },
         isAdminCheck: {
             currentUserEmail,
             isExactMatch: currentUserEmail === 'volunteen.company@gmail.com',
@@ -155,7 +160,7 @@ function createEventCard(eventData, eventId) {
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">${eventData.title}</h5>
                 <div class="btn-group">
-                    ${loggedIn && hasSubAdminPermission ? 
+                    ${loggedIn && hasSubAdminPermission && isEventCreator ? 
                         `<button class="btn btn-sm btn-outline-primary" onclick="editEvent('${eventId}', '${eventData.title}')" title="Edit Event">
                             <i class="fa fa-edit"></i> Edit
                         </button>
