@@ -50,8 +50,11 @@ if (isEditMode && editingEventId) {
     }
 }
 
-const create = document.getElementById('submitButton');
-create.addEventListener("click", async (e) => {
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    const create = document.getElementById('submitButton');
+    if (create) {
+        create.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const title = document.getElementById('firstName').value;
@@ -175,5 +178,9 @@ create.addEventListener("click", async (e) => {
         } else {
             alert("Access denied. Sub-admin permissions required to create events.");
         }
+    }
+        });
+    } else {
+        console.error('Submit button not found');
     }
 });

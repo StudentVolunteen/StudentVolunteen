@@ -181,40 +181,17 @@
       popup.classList.remove("open-popup-new");
     }
     
-    // Add form submit handler as backup
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.getElementById('addopps-form');
-      const submitBtn = document.getElementById('submitButton');
-      
-      if (form && submitBtn) {
-        console.log('Form and submit button found');
-        
-        // Add click handler to submit button
-        submitBtn.addEventListener('click', function(e) {
-          console.log('Submit button clicked');
-          e.preventDefault();
-          
-          // Trigger the form submission logic
-          const title = document.getElementById('firstName').value;
-          const description = document.getElementById('addDescription').value;
-          const email = document.getElementById('supervisorMail').value;
-          const eventDate = document.getElementById('eventDate').value;
-          const volunteerCount = document.getElementById('volunteerCount').value;
-          const eventAddress = document.getElementById('eventAddress').value;
-          
-          console.log('Form values:', { title, description, email, eventDate, volunteerCount, eventAddress });
-          
-          if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress) {
-            alert("Please fill in all required fields!");
-            return;
-          }
-          
-          alert("Form validation passed! Check console for more details.");
-        });
-      } else {
-        console.error('Form or submit button not found');
-      }
-    });
+         // Add scroll functionality to popup
+     function openPopup() {
+       popup.classList.add("open-popup-new");
+       // Scroll to top of popup when opened
+       setTimeout(() => {
+         const popupContent = document.querySelector('.popup-new');
+         if (popupContent) {
+           popupContent.scrollTop = 0;
+         }
+       }, 100);
+     }
   </script>
   <!-- end opportunity add form section -->
 

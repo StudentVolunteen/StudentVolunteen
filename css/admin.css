@@ -30,6 +30,12 @@
     transform: translate(-50%, -50%) scale(0.1);
     visibility: hidden;
     transition: transform 0.4s, top 0.4s;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
 }
 
 .open-popup-new {
