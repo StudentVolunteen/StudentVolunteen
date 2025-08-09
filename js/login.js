@@ -97,7 +97,7 @@ login.addEventListener("click", function (event) {
     if (role === 'supervisor') {
       window.location.href = "addopps.admin.html";
     } else {
-      window.location.href = "index.login.html";
+      window.location.href = "index.html";
     }
     const user = userCredential.user;
 
