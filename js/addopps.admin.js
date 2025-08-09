@@ -100,7 +100,9 @@ create.addEventListener("click", async (e) => {
         }
     });
     
-    if (hasSubAdminPermission) {
+    // TEMPORARY FIX: Allow anyone logged in to edit/create events
+    const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+    if (loggedIn) {
         try {
             if (isEditMode && editingEventId) {
                 // Update existing event
@@ -142,6 +144,6 @@ create.addEventListener("click", async (e) => {
             alert("Failed to " + (isEditMode ? "update" : "create") + " event: " + err.message);
         }
     } else {
-        alert("You have to be a sub-admin to make an event!");
+        alert("Please log in to create or edit events!");
     }
 });
