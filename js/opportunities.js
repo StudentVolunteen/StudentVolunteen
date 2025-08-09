@@ -123,6 +123,15 @@ function createEventCard(eventData, eventId) {
     // Check if user is the creator of this event (for supervisors)
     const isEventCreator = eventData.email === currentUserEmail;
     
+    // Debug logging for event creator check
+    console.log('Event creator check:', {
+        eventTitle: eventData.title,
+        eventEmail: eventData.email,
+        currentUserEmail: currentUserEmail,
+        isEventCreator: isEventCreator,
+        emailMatch: eventData.email === currentUserEmail
+    });
+    
     // Check if user has signed up for this event (for students)
     const userHours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
     const currentUser = localStorage.getItem('volunteen_current_user') || 'demo';
@@ -182,10 +191,19 @@ function createEventCard(eventData, eventId) {
         </div>
     `;
     
-    // Debug: Log admin status for this card
-    if (isAdmin) {
-        console.log(`Admin buttons should be visible for event: ${eventData.title}`);
-    }
+    // Debug: Log button visibility for this card
+    console.log(`Button visibility for event "${eventData.title}":`, {
+        showEditButtons: loggedIn && hasSubAdminPermission && isEventCreator,
+        showAdminButtons: loggedIn && isAdmin,
+        showCancelButton: loggedIn && !hasSubAdminPermission && !isAdmin && hasSignedUp,
+        breakdown: {
+            loggedIn,
+            hasSubAdminPermission,
+            isEventCreator,
+            isAdmin,
+            hasSignedUp
+        }
+    });
     
     return col;
 }
