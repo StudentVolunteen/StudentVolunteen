@@ -18,7 +18,7 @@ const auth = getAuth(app);
 const user = localStorage.getItem("storageName");
 const role = localStorage.getItem('volunteen_current_role');
 const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
-const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor' || permissions.includes('supervisor');
 
 // Check if we're in edit mode
 const urlParams = new URLSearchParams(window.location.search);
@@ -88,6 +88,18 @@ create.addEventListener("click", async (e) => {
         return;
     }
 
+    // Debug permissions
+    console.log('Permission check in addopps:', {
+        role: role,
+        permissions: permissions,
+        hasSubAdminPermission: hasSubAdminPermission,
+        breakdown: {
+            hasSubAdmin: permissions.includes('sub-admin'),
+            isSupervisorRole: role === 'supervisor',
+            hasSupervisorPermission: permissions.includes('supervisor')
+        }
+    });
+    
     if (hasSubAdminPermission) {
         try {
             if (isEditMode && editingEventId) {
