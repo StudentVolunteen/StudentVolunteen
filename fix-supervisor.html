@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Supervisor Account - VolunTEEN</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .alert { padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .alert-success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .alert-danger { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .current-status { background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Fix Supervisor Account Permissions</h2>
+            <p>This will fix your supervisor account permissions so you can create and edit events.</p>
+            
+            <div class="current-status">
+                <h3>Current Account Status:</h3>
+                <p><strong>Logged In:</strong> <span id="loginStatus">Loading...</span></p>
+                <p><strong>Email:</strong> <span id="currentEmail">Loading...</span></p>
+                <p><strong>Role:</strong> <span id="currentRole">Loading...</span></p>
+                <p><strong>Permissions:</strong> <span id="currentPermissions">Loading...</span></p>
+            </div>
+            
+            <button id="fixPermissionsBtn" class="btn btn-primary">Fix My Supervisor Permissions</button>
+            <button id="goToOpportunitiesBtn" class="btn btn-success">Go to Opportunities</button>
+            
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Display current status
+        function updateStatus() {
+            const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+            const currentEmail = localStorage.getItem('volunteen_current_user') || 'Not logged in';
+            const role = localStorage.getItem('volunteen_current_role') || 'None';
+            const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+            
+            document.getElementById('loginStatus').textContent = loggedIn ? 'Yes' : 'No';
+            document.getElementById('currentEmail').textContent = currentEmail;
+            document.getElementById('currentRole').textContent = role;
+            document.getElementById('currentPermissions').textContent = permissions.join(', ') || 'None';
+        }
+
+        document.getElementById('fixPermissionsBtn').addEventListener('click', () => {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Set supervisor permissions
+                localStorage.setItem('volunteen_logged_in', 'true');
+                localStorage.setItem('volunteen_current_role', 'supervisor');
+                localStorage.setItem('volunteen_current_permissions', JSON.stringify(['sub-admin', 'supervisor']));
+                
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h3>✅ Supervisor Permissions Fixed!</h3>
+                        <p>Your account now has supervisor permissions. You should be able to:</p>
+                        <ul>
+                            <li>See the "Create Event" button</li>
+                            <li>Edit events</li>
+                            <li>Delete events</li>
+                        </ul>
+                        <p>Click "Go to Opportunities" to test it out!</p>
+                    </div>
+                `;
+                
+                // Update the status display
+                updateStatus();
+                
+                console.log('Supervisor permissions set successfully');
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h3>❌ Error Setting Permissions</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+                console.error('Error setting permissions:', error);
+            }
+        });
+
+        document.getElementById('goToOpportunitiesBtn').addEventListener('click', () => {
+            window.location.href = 'opportunities.login.html';
+        });
+
+        // Update status when page loads
+        updateStatus();
+    </script>
+</body>
+</html>
