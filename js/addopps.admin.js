@@ -100,9 +100,33 @@ create.addEventListener("click", async (e) => {
         }
     });
     
-    // TEMPORARY FIX: Allow anyone logged in to edit/create events
+    // Check permissions for creating/editing events
     const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
-    if (loggedIn) {
+    const currentUserEmail = localStorage.getItem('volunteen_current_user');
+    const role = localStorage.getItem('volunteen_current_role');
+    const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+    
+    // Check if user has sub-admin permissions (supervisor)
+    const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+    
+    // For editing, check if user is the creator of the event
+    let canEdit = false;
+    if (isEditMode && editingEventId) {
+        // Get the event data to check if current user is the creator
+        try {
+            const eventDoc = await getDoc(doc(db, "Events", editingEventId));
+            if (eventDoc.exists()) {
+                const eventData = eventDoc.data();
+                const eventEmail = (eventData.email || '').trim().toLowerCase();
+                const userEmail = (currentUserEmail || '').trim().toLowerCase();
+                canEdit = eventEmail === userEmail;
+            }
+        } catch (error) {
+            console.error("Error checking event permissions:", error);
+        }
+    }
+    
+    if (loggedIn && (hasSubAdminPermission || canEdit)) {
         try {
             if (isEditMode && editingEventId) {
                 // Update existing event
@@ -143,7 +167,13 @@ create.addEventListener("click", async (e) => {
             console.error("Error writing document: ", err);
             alert("Failed to " + (isEditMode ? "update" : "create") + " event: " + err.message);
         }
-    } else {
+    } else if (!loggedIn) {
         alert("Please log in to create or edit events!");
+    } else if (!hasSubAdminPermission && !canEdit) {
+        if (isEditMode) {
+            alert("Access denied. You can only edit events that you created.");
+        } else {
+            alert("Access denied. Sub-admin permissions required to create events.");
+        }
     }
 });

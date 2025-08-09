@@ -74,7 +74,13 @@ login.addEventListener("click", function (event) {
       console.log('User logged in:', email, 'with role:', storedRole);
     }
     
-    window.location.href = "index.login.html";
+    // Redirect based on user role
+    const role = localStorage.getItem('volunteen_current_role');
+    if (role === 'supervisor') {
+      window.location.href = "addopps.admin.html";
+    } else {
+      window.location.href = "index.login.html";
+    }
     const user = userCredential.user;
 
   })

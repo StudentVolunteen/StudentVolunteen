@@ -254,6 +254,17 @@
       }
     }
   }
+  
+  // Add click handler for Create Event button
+  document.addEventListener('DOMContentLoaded', function() {
+    const createEventBtn = document.getElementById('create-event-btn');
+    if (createEventBtn) {
+      createEventBtn.addEventListener('click', function() {
+        window.location.href = 'addopps.admin.html';
+      });
+    }
+  });
+  
 document.getElementById('logout-btn').onclick = function() {
   localStorage.setItem('volunteen_logged_in', 'false');
   updateAuthNav();

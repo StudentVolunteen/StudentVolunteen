@@ -160,7 +160,7 @@ function createEventCard(eventData, eventId) {
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">${eventData.title}</h5>
                 <div class="btn-group">
-                    ${loggedIn ? 
+                    ${loggedIn && hasSubAdminPermission && isEventCreator ? 
                         `<button class="btn btn-sm btn-outline-primary" onclick="editEvent('${eventId}', '${eventData.title}')" title="Edit Event">
                             <i class="fa fa-edit"></i> EDIT
                         </button>
