@@ -62,8 +62,12 @@ login.addEventListener("click", function (event) {
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
       console.log('Admin account logged in:', email);
     } else {
-      // Get the stored role for this user
-      const storedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role') || 'student';
+      // Get the stored role for this user (try UID first, then email as fallback)
+      let storedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role');
+      if (!storedRole) {
+        // Fallback: check if role is stored by email
+        storedRole = localStorage.getItem('volunteen_user_role_' + email) || 'student';
+      }
       const permissions = storedRole === 'supervisor' ? ['sub-admin', 'supervisor'] : ['student'];
       
       // Set login state
