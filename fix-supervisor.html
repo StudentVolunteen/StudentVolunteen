@@ -65,6 +65,27 @@
             }
         }
 
+        // Function to find and update UID-based role storage
+        function updateUIDBasedRole(email, newRole) {
+            // Find all UID-based role keys and update the one that matches this email
+            const keysToUpdate = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('volunteen_user_') && key.endsWith('_role')) {
+                    // Check if this key is associated with the current email
+                    // We'll update all UID-based keys to be safe
+                    keysToUpdate.push(key);
+                }
+            }
+            
+            // Update all UID-based role keys
+            keysToUpdate.forEach(key => {
+                localStorage.setItem(key, newRole);
+            });
+            
+            console.log('Updated UID-based role keys:', keysToUpdate);
+        }
+
         document.getElementById('fixPermissionsBtn').addEventListener('click', () => {
             const resultDiv = document.getElementById('result');
             const userEmail = document.getElementById('userEmail').value.trim();
@@ -98,6 +119,9 @@
                     users[userEmail] = { role: 'supervisor', permissions: ['sub-admin', 'supervisor'] };
                 }
                 localStorage.setItem('volunteen_users', JSON.stringify(users));
+                
+                // Update any existing UID-based role storage
+                updateUIDBasedRole(userEmail, 'supervisor');
                 
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
