@@ -192,6 +192,31 @@
          }
        }, 100);
      }
+     
+     // Add backup form submit handler
+     document.addEventListener('DOMContentLoaded', function() {
+       const form = document.getElementById('addopps-form');
+       const submitBtn = document.getElementById('submitButton');
+       
+       console.log('Backup handler - Form found:', form);
+       console.log('Backup handler - Submit button found:', submitBtn);
+       
+       if (form && submitBtn) {
+         // Add form submit event
+         form.addEventListener('submit', function(e) {
+           console.log('Form submit event triggered');
+           e.preventDefault();
+           alert('Form submit event works!');
+         });
+         
+         // Add click event as backup
+         submitBtn.addEventListener('click', function(e) {
+           console.log('Backup click handler triggered');
+           e.preventDefault();
+           alert('Backup click handler works!');
+         });
+       }
+     });
   </script>
   <!-- end opportunity add form section -->
 

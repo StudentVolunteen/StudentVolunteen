@@ -52,9 +52,14 @@ if (isEditMode && editingEventId) {
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, looking for submit button...');
     const create = document.getElementById('submitButton');
+    console.log('Submit button found:', create);
+    
     if (create) {
+        console.log('Adding click event listener to submit button');
         create.addEventListener("click", async (e) => {
+            console.log('Submit button clicked!');
     e.preventDefault();
 
     const title = document.getElementById('firstName').value;
