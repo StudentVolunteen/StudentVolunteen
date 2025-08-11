@@ -210,10 +210,81 @@
          });
          
          // Add click event as backup
-         submitBtn.addEventListener('click', function(e) {
+         submitBtn.addEventListener('click', async function(e) {
            console.log('Backup click handler triggered');
            e.preventDefault();
-           alert('Backup click handler works!');
+           
+           // Get form values
+           const title = document.getElementById('firstName').value;
+           const description = document.getElementById('addDescription').value;
+           const email = document.getElementById('supervisorMail').value;
+           const eventDate = document.getElementById('eventDate').value;
+           const volunteerCount = document.getElementById('volunteerCount').value;
+           const eventAddress = document.getElementById('eventAddress').value;
+           const password = document.getElementById('password').value;
+           const eventPin = document.getElementById('eventPin').value;
+           
+           console.log('Backup handler - Form values:', { title, description, email, eventDate, volunteerCount, eventAddress });
+           
+           // Validate required fields
+           if (!title || !description || !email || !eventDate || !volunteerCount || !eventAddress) {
+             alert("Please fill in all required fields!");
+             return;
+           }
+           
+           // Check if user is logged in and has permissions
+           const loggedIn = localStorage.getItem('volunteen_logged_in') === 'true';
+           const role = localStorage.getItem('volunteen_current_role');
+           const permissions = JSON.parse(localStorage.getItem('volunteen_current_permissions') || '[]');
+           const hasSubAdminPermission = permissions.includes('sub-admin') || role === 'supervisor';
+           
+           if (!loggedIn) {
+             alert("Please log in to create events!");
+             return;
+           }
+           
+           if (!hasSubAdminPermission) {
+             alert("Access denied. Sub-admin permissions required to create events.");
+             return;
+           }
+           
+           try {
+             // Import Firebase functions dynamically
+             const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js");
+             const { getFirestore, addDoc, collection } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+             
+             const firebaseConfig = {
+               apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
+               authDomain: "volunteen-438f6.firebaseapp.com",
+               projectId: "volunteen-438f6",
+               storageBucket: "volunteen-438f6.appspot.com",
+               messagingSenderId: "651971950022",
+               appId: "1:651971950022:web:8709d63dbcbb745125eec7"
+             };
+             
+             const app = initializeApp(firebaseConfig);
+             const db = getFirestore(app);
+             
+             // Create new event
+             await addDoc(collection(db, "Events"), {
+               title,
+               description,
+               email,
+               eventDate,
+               volunteerCount: parseInt(volunteerCount),
+               eventAddress,
+               currentVolunteers: 0,
+               password,
+               eventPin,
+               createdAt: new Date().toISOString()
+             });
+             
+             alert("Event created successfully!");
+             window.location.href = 'opportunities.login.html';
+           } catch (err) {
+             console.error("Error creating event:", err);
+             alert("Failed to create event: " + err.message);
+           }
          });
        }
      });
