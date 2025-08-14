@@ -1,0 +1,5 @@
+[33mfd77106[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Restore logo size to 150px and update footer on all pages including hours.login.html
+[33m9000ba4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Move logo to left of text in footer for cleaner appearance
+[33mffb8ca1[m Update footer on about and contact pages to match home page and add VolunTEEN logo
+[33mb1e43b9[m Fix backup submit handler to actually create events with Firebase
+[33m03d181a[m Add debugging to submit button to identify why it's not working
