@@ -210,8 +210,9 @@
               // Clear session-related data only (preserve user progress and role)
               localStorage.removeItem('volunteen_logged_in');
               localStorage.removeItem('volunteen_current_user');
-              localStorage.removeItem('volunteen_current_role');
-              localStorage.removeItem('volunteen_current_permissions');
+              // DON'T remove role data - keep supervisor accounts permanent
+              // localStorage.removeItem('volunteen_current_role');
+              // localStorage.removeItem('volunteen_current_permissions');
               localStorage.removeItem('sent_emails');
               localStorage.removeItem('deleted_events_backup');
               localStorage.removeItem('editing_event_id');

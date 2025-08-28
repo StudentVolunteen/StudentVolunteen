@@ -125,21 +125,26 @@
     }
                                  // Comprehensive logout function
              function performLogout() {
-               // Clear session-related data only (preserve user progress)
+               // Clear session-related data only (preserve user progress and role)
                localStorage.removeItem('volunteen_logged_in');
                localStorage.removeItem('volunteen_current_user');
-               localStorage.removeItem('volunteen_current_role');
-               localStorage.removeItem('volunteen_current_permissions');
+               // DON'T remove role data - keep supervisor accounts permanent
+               // localStorage.removeItem('volunteen_current_role');
+               // localStorage.removeItem('volunteen_current_permissions');
                localStorage.removeItem('sent_emails');
                localStorage.removeItem('deleted_events_backup');
                localStorage.removeItem('editing_event_id');
                localStorage.removeItem('editing_event_title');
                
-               // Clear any other session-related data (but preserve volunteen_hours)
+               // Clear any other session-related data (but preserve volunteen_hours and role storage)
                const keysToRemove = [];
                for (let i = 0; i < localStorage.length; i++) {
                  const key = localStorage.key(i);
-                 if (key && key.startsWith('volunteen_') && key !== 'volunteen_hours') {
+                 if (key && key.startsWith('volunteen_') && 
+                     key !== 'volunteen_hours' && 
+                     !key.includes('user_role_') && 
+                     !key.includes('_role') &&
+                     !key.includes('users')) {
                    keysToRemove.push(key);
                  }
                }
