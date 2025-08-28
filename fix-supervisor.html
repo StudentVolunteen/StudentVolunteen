@@ -80,8 +80,10 @@
             }
             
             try {
-                // SIMPLE, BULLETPROOF FIX
+                // COMPREHENSIVE, BULLETPROOF FIX
                 // Set supervisor role in ALL possible storage locations
+                
+                console.log('Starting comprehensive supervisor fix for:', userEmail);
                 
                 // 1. Current session
                 localStorage.setItem('volunteen_logged_in', 'true');
@@ -89,21 +91,38 @@
                 localStorage.setItem('volunteen_current_role', 'supervisor');
                 localStorage.setItem('volunteen_current_permissions', JSON.stringify(['sub-admin', 'supervisor']));
                 
-                // 2. Email-based storage
+                // 2. Email-based storage (MOST IMPORTANT)
                 localStorage.setItem('volunteen_user_role_' + userEmail, 'supervisor');
                 
-                // 3. Users object
+                // 3. Users object with complete data
                 let users = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
-                users[userEmail] = { role: 'supervisor', permissions: ['sub-admin', 'supervisor'] };
+                users[userEmail] = { 
+                    role: 'supervisor', 
+                    permissions: ['sub-admin', 'supervisor'],
+                    password: 'firebase-auth' // Placeholder since we don't store passwords
+                };
                 localStorage.setItem('volunteen_users', JSON.stringify(users));
                 
                 // 4. Update ALL UID-based keys (for any existing UIDs)
+                let uidKeysUpdated = 0;
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && key.startsWith('volunteen_user_') && key.endsWith('_role')) {
                         localStorage.setItem(key, 'supervisor');
+                        uidKeysUpdated++;
+                        console.log('Updated UID key:', key);
                     }
                 }
+                
+                // 5. Set a special flag to ensure supervisor status
+                localStorage.setItem('volunteen_supervisor_override_' + userEmail, 'true');
+                
+                // 6. Log all storage locations for debugging
+                console.log('=== SUPERVISOR FIX COMPLETE ===');
+                console.log('Email-based role:', localStorage.getItem('volunteen_user_role_' + userEmail));
+                console.log('Users object:', JSON.parse(localStorage.getItem('volunteen_users') || '{}'));
+                console.log('UID keys updated:', uidKeysUpdated);
+                console.log('Override flag set:', localStorage.getItem('volunteen_supervisor_override_' + userEmail));
                 
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
@@ -114,9 +133,17 @@
                             <li>✅ Edit events</li>
                             <li>✅ Delete events</li>
                             <li>✅ Permissions will stay after logout/login</li>
-                            <li>✅ Set in ALL storage locations</li>
+                            <li>✅ Set in ALL storage locations (${uidKeysUpdated} UID keys updated)</li>
+                            <li>✅ Override flag set for extra security</li>
                         </ul>
                         <p><strong>🔒 This is PERMANENT - you will ALWAYS be a supervisor now!</strong></p>
+                        <p><strong>📝 Next steps:</strong></p>
+                        <ol>
+                            <li>Log out completely</li>
+                            <li>Log back in with your email</li>
+                            <li>You should be redirected to the Create Event page</li>
+                            <li>Check the Opportunities page for the "Create Event" button</li>
+                        </ol>
                         <p>Click "Go to Opportunities" to test it out!</p>
                     </div>
                 `;

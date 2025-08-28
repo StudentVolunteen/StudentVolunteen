@@ -62,18 +62,26 @@ login.addEventListener("click", function (event) {
       localStorage.setItem('volunteen_current_permissions', JSON.stringify(['admin']));
       console.log('Admin account logged in:', email);
     } else {
-      // SIMPLE, RELIABLE ROLE CHECK
+      // COMPREHENSIVE, RELIABLE ROLE CHECK
       // Check if user is marked as supervisor in any storage location
       const emailBasedRole = localStorage.getItem('volunteen_user_role_' + email);
       const uidBasedRole = localStorage.getItem('volunteen_user_' + userCredential.user.uid + '_role');
       const usersObject = JSON.parse(localStorage.getItem('volunteen_users') || '{}');
       const userInUsers = usersObject[email];
+      const overrideFlag = localStorage.getItem('volunteen_supervisor_override_' + email);
       
       // Determine role - if ANY storage says supervisor, they're a supervisor
       let finalRole = 'student';
       if (emailBasedRole === 'supervisor' || uidBasedRole === 'supervisor' || 
-          (userInUsers && userInUsers.role === 'supervisor')) {
+          (userInUsers && userInUsers.role === 'supervisor') || overrideFlag === 'true') {
         finalRole = 'supervisor';
+        console.log('SUPERVISOR ROLE DETECTED for:', email);
+        console.log('Role sources:', { 
+          emailBasedRole, 
+          uidBasedRole, 
+          userInUsers: userInUsers?.role,
+          overrideFlag 
+        });
       }
       
       const permissions = finalRole === 'supervisor' ? ['sub-admin', 'supervisor'] : ['student'];
@@ -88,8 +96,13 @@ login.addEventListener("click", function (event) {
       localStorage.setItem('volunteen_user_role_' + email, finalRole);
       localStorage.setItem('volunteen_user_' + userCredential.user.uid + '_role', finalRole);
       
+      // Ensure the override flag is set if they're a supervisor
+      if (finalRole === 'supervisor') {
+        localStorage.setItem('volunteen_supervisor_override_' + email, 'true');
+      }
+      
       console.log('User logged in:', email, 'with role:', finalRole, 'UID:', userCredential.user.uid);
-      console.log('Role sources:', { emailBasedRole, uidBasedRole, userInUsers: userInUsers?.role });
+      console.log('Final permissions:', permissions);
     }
     
     // Redirect based on user role
