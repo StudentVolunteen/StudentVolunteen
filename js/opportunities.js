@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDvsS06wEMIc7WW30WxKfmu8R-4xKLJ6Ag",
@@ -155,8 +155,14 @@ function createEventCard(eventData, eventId) {
     const maxVolunteers = eventData.volunteerCount || 999;
     const isEventFull = currentVolunteers >= maxVolunteers;
     
+    // Check if event date has passed
+    const eventDate = eventData.eventDate ? new Date(eventData.eventDate) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+    const isPastEvent = eventDate && eventDate < today;
+    
     col.innerHTML = `
-        <div class="card h-100">
+        <div class="card h-100 ${isPastEvent ? 'past-event' : ''}">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">${eventData.title}</h5>
                 <div class="btn-group">
@@ -187,15 +193,18 @@ function createEventCard(eventData, eventId) {
                 <p class="card-text"><small class="text-muted">Date: ${eventData.eventDate || 'TBD'}</small></p>
                 <p class="card-text"><small class="text-muted">Address: ${eventData.eventAddress || 'TBD'}</small></p>
                 <p class="card-text"><small class="text-muted">Volunteers: ${currentVolunteers}/${maxVolunteers}</small></p>
-                ${!hasSignedUp ? 
-                    (isEventFull ? 
-                        `<button class="btn btn-secondary w-100" disabled>Event Full</button>` :
-                        (eventData.eventPin ? 
-                            `<button class="btn btn-primary w-100" onclick="checkPinAndSignup('${eventData.title}', '${eventData.email}', '${eventId}', '${eventData.eventPin}')">Sign Up (PIN Required)</button>` :
-                            `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>`
-                        )
-                    ) :
-                    `<button class="btn btn-success w-100" disabled>Already Signed Up</button>`
+                ${isPastEvent ? 
+                    `<button class="btn btn-secondary w-100" disabled>Event Has Passed</button>` :
+                    (!hasSignedUp ? 
+                        (isEventFull ? 
+                            `<button class="btn btn-secondary w-100" disabled>Event Full</button>` :
+                            (eventData.eventPin ? 
+                                `<button class="btn btn-primary w-100" onclick="checkPinAndSignup('${eventData.title}', '${eventData.email}', '${eventId}', '${eventData.eventPin}')">Sign Up (PIN Required)</button>` :
+                                `<button class="btn btn-primary w-100" onclick="openModal('${eventData.title}', '${eventData.email}', '${eventId}')">Sign Up</button>`
+                            )
+                        ) :
+                        `<button class="btn btn-success w-100" disabled>Already Signed Up</button>`
+                    )
                 }
             </div>
         </div>
@@ -319,11 +328,35 @@ function updateUndoButtonVisibility() {
 }
 
 // Function to cancel signup (for students)
-function cancelSignup(eventTitle) {
+async function cancelSignup(eventTitle) {
     if (confirm(`Are you sure you want to cancel your signup for "${eventTitle}"?`)) {
         try {
             let hours = JSON.parse(localStorage.getItem('volunteen_hours') || '[]');
             const currentUser = localStorage.getItem('volunteen_current_user') || 'demo';
+            
+            // Find the event in Firebase to update volunteer count
+            const querySnapshot = await getDocs(collection(db, "Events"));
+            let eventToUpdate = null;
+            let eventId = null;
+            
+            querySnapshot.forEach((doc) => {
+                const eventData = doc.data();
+                if (eventData.title === eventTitle) {
+                    eventToUpdate = eventData;
+                    eventId = doc.id;
+                }
+            });
+            
+            if (eventToUpdate && eventId) {
+                // Decrease volunteer count in Firebase
+                const currentVolunteers = eventToUpdate.currentVolunteers || 0;
+                const newVolunteerCount = Math.max(0, currentVolunteers - 1);
+                
+                await setDoc(doc(db, "Events", eventId), {
+                    ...eventToUpdate,
+                    currentVolunteers: newVolunteerCount
+                }, { merge: true });
+            }
             
             // Remove only the current user's signup for this event
             hours = hours.filter(hour => 
